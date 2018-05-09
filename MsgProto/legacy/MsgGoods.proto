@@ -1,0 +1,37 @@
+package Msg;
+
+// goods类型
+enum GoodsType
+{
+	option allow_alias=true;
+	
+	GoodsStart	   		=	0;
+	
+	Money			=	0;		// 货币，Id为货币类型，Count为货币数量
+	Item			=	1;		// 道具，Id为道具的静态id，Count为道具数量(不能超过最大堆叠个数)，Misc为物品生成表id
+	Equip			=	2;		// 装备，Id为装备的静态id，Count必须为1，Misc为物品生成表id
+	RVal			=	3;		// 重置类数值，Id为数值类型，Count为值
+	Exp				=	4;		// 经验，Count为经验值
+	LootWeight		=   5;		// 随机掉落表ID
+	GuildContribution = 6;      // 帮会贡献
+	Intimacy		=	7;		// 亲密度
+	Props			=	8;		// 道具 （现在用来表示物品）
+	GTWeapon		=	9;		// 武器
+	
+	GoodsEnd				=	10;
+}
+
+// goods列表
+message PbGoodsList
+{
+	repeated PbGoods 		Goods 				= 1;	//物品列表		
+}
+
+// goods定义
+message PbGoods
+{
+	required int32 Type		=		1;		// 类型
+	required int32 Id		=		2;		// 子类型/Id
+	required int32 Count	=		3;		// 值/数量
+	required int32 Misc		=		4;		// 魔数
+}

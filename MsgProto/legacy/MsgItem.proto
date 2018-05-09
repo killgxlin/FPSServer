@@ -1,0 +1,736 @@
+package Msg;
+import "protos/MsgAtt.proto";
+import "protos/MsgShop.proto";
+
+
+
+// 物品子类型
+enum ItemSubType
+{
+	EIST_Normal		= 0;		// 普通
+	// Prop
+	EIST_Gem 		= 1;		// 宝石
+	EIST_Feather 	= 2;		// 羽毛
+	EIST_Drugs 		= 3;		// 药水
+	EIST_SkillBook  = 4;		// 技能书
+	EIST_QuestProp	= 5;		// 任务道具
+	EIST_Num		= 6;
+}
+
+// 背包类型
+enum ContainerType
+{
+	option allow_alias=true;
+	ContainerStart = 0;
+	Bag = 0;             // 背包
+    Storage = 1;         // 仓库
+    EquipBag = 2; 		 // 装备槽位
+	ImpetrateBag = 3 ; 	 // 祈福仓库
+	SpriteBag	 = 4 ;	 // 精灵仓库
+	TalentCardBag  = 5;  // 天赋卡片背包
+	BossCardBag    = 6;  // Boss卡牌背包
+	BossSpellCardBag = 7; // Boss技能卡牌背包
+	EliteCardBag   = 8;  // 精英怪卡牌背包
+	DeviceCardBag     = 9;  // 机关卡牌背包
+    ContainerTypeEnd = 10;// 背包类型最大值
+}
+
+// 物品使用效果类型
+enum ItemEffectType
+{
+	option allow_alias	=	true;
+	ItemEffectTypeStart = 	0;
+	RewardGoods			=	1;			//	奖励物品类
+	RewardBuffer		=	2;			//	奖励BUFFER类
+	AddAttBonus			=	3;			//	果实
+	AddExp				=	4;			//	经验丹
+	AddMoney			=	5;			//	Money
+	AddRval				=	6;			//	Rval
+	DecPkPoint			=	7;			//  善恶丹
+	CastEffect			=	8;			//  施放技能
+	LevelUp				=	9;			//  等级印记
+	PetLearnSkill		=	10;			//  宠物打书
+	BloodPoolUse        =   11;         //  血池使用
+	MiniCutscene		=	12;			//  播放剧场
+	SpawnMonster		=	13;			//  刷新怪物
+	ActiveCard          =   14;         //  激活卡牌
+	ItemEffectTypeEnd	= 	15;						
+}
+
+// 道具玩法结果返回类型
+enum ItemOperationResult
+{
+	Success = 1;						// 操作成功
+	Fail = 2;							// 操作失败
+	NotHasEnoughMaterial = 3;			// 消耗材料不足
+	NotHasEnoughSpecialMaterial = 4;	// 特殊材料不足
+	NotHasEnoughGold = 5;				// 金币不足
+	MaxOperationLevel = 6;				// 操作等级限制 已达最大值
+	ItemsNotAgreement = 7;				// 道具不一致
+	LoadCfgError = 8;					// 读取静态属性表错误
+	UnknownError = 9;					// 未知错误
+}
+
+// 装备玩法类型
+enum EquipOperationType
+{
+	Forge = 1;					// 强化
+	Append = 2;					// 追加
+	Upgrade = 3;				// 进阶
+	Inherit	= 4;				// 传承
+}
+
+// 兑换类型
+enum ExchangeType
+{
+	ExchangeTypeStart = 0;
+	WarContributionExchange	= 1;		// 战功兑换
+	CrystalExchangeTalisman = 2;		// 魔精兑换护符
+	CrystalExchangeItem		= 3;		// 魔精兑换道具
+	CrystalExchangeEquip1	= 4;		// 魔精兑换职业1装备
+	CrystalExchangeEquip2	= 5;		// 魔精兑换职业2装备
+	CrystalExchangeEquip3	= 6;		// 魔精兑换职业3装备
+	CrystalExchangeEquip4	= 7;		// 魔精兑换职业4装备
+	ExchangeTypeEnd = 8;		// 兑换类型终止
+}
+
+// 回收类型
+enum RecoveryType
+{
+	option allow_alias=true;
+	RecoveryTypeStart = 0;			// 回收类型起始	
+	Sale			  = 0;			// 出售
+	EquipRecovery	  = 1;			// 装备回收
+	SpiritRecovery	  = 2;			// 精灵回收
+	RecovertTypeEnd   = 3;			// 回收类型终止
+}
+
+// 道具转换类型
+enum ItemChangeType
+{
+	option allow_alias=true;
+	ItemChangeTypeStart 				= 0;			// 道具转换起始	
+	GoldChange		 					= 0;			// 金币转换
+	BindDiamondChange					= 1;			// 绑钻转换
+	DiamondChange	  					= 2;			// 钻石转换
+	ItemChangeTypeEnd   				= 4;			// 道具转换终止
+}
+
+// 道具来源类型
+enum ItemFromType
+{
+	option allow_alias=true;
+	ItemFromTypeStart					= 0;			// 起始
+	other								= 0;			// 其他
+	Pick								= 1;			// 拾取
+	ItemFromTypeEnd   					= 2;			// 终止
+}
+
+// 装备阶级
+enum ItemQuality
+{
+	WhiteQuality            =  0;  //白
+	GreenQuality            =  1;  //绿
+	BlueQuality             =  2;  //蓝
+	PurpleQuality           =  3;  //紫
+	OrangeQuality           =  4;  //橙
+	PinkQuality             =  5;  //粉
+}
+
+//装备孔颜色
+enum EquipPunchColor
+{
+	None                   =  -1;
+	White                  =  0;  //白
+	Green                  =  1;  //绿
+	Blue                   =  2;  //蓝
+	Purple                 =  3;  //紫
+	Orange                 =  4;  //橙
+}
+
+// 装备随机属性消息结构
+message PbEquipAtt
+{
+	required int32           Type            = 1;			  // 属性ID
+	required int32           Val             = 2;			  // 属性值
+	required EquipPunchColor Color           = 3;             // 属性颜色
+}
+
+// 装备战斗效果
+message PbEquipCombatEffect
+{
+	optional int32		Type			=	1[default = 0];			//战斗效果类型
+	optional int32		Value			=	2[default = 0];			//战斗效果id
+}	
+
+
+message PbContainer
+{
+	required int32	Num		 =	1;									// 格子数量
+	repeated PbItem Items	 =	2;									// 物品列表
+	repeated int32 indexes =  3;      								// 物品的索引
+	required int32 type        =  4;      							// 包裹类型
+}
+
+
+// 装备槽结构
+message PbEquipSlot
+{
+	required  	int32   Id					=		1;				// ID
+	required  	int32   ForgeLv				=		2;				// 强化等级
+	required  	int32   AppendPropLv		=		3;				// 追加等级
+}
+
+// 本地玩家初始化 - 物品
+message NsPlayerInitItem
+{
+	repeated PbContainer Bags        = 1;	    // 各种背包
+	repeated PbItemCD	 CDInfoList	 = 2;		// CD信息
+}
+
+message NsPlayerInitEquipSlot
+{
+	repeated PbEquipSlot EquipSlots	 = 1;		// 槽位信息
+}
+
+// 请求开启背包
+message NcOpenBag
+{
+	required int32		ContainerType		=		1;			// 开启背包类型 Type = 1:背包 Type = 2:仓库
+	required int32		OpenNum				=		2;			// 开启背包各数
+}
+//返回开启背包结果
+message NsOpenBagResult
+{
+	required bool		Result				=		1;			// 开启背包结果
+	required int32		ContainerType		=		2;			// 开启背包类型
+	required int32		BagNum 				=		3;			// 当前背包开启个数
+}
+
+// 返回添加道具结果
+message NsAddItem
+{
+	required PbItem   	Item				= 		1;			// 创建的物品  
+	required int32      type                =       2;          // 类型
+	required int32      index               =       3;          // 位置
+}
+
+// 请求开启背包时间
+message NcRequestOpenBagTime
+{
+	required int32		ContainerType		= 		1;			// 仓库类型
+}
+
+// 返回开启背包时间
+message NsRequestOpenBagTime
+{
+	required int64		OpenBagSurplusTime	= 		1;			// 开启背包的剩余时间
+	required int32		ContainerType		=		2;			// 仓库类型
+}
+
+// 更新道具消息
+message NsUpdateItem
+{
+	required PbItem   	Item				= 		1;			// 更新的物品  
+}
+
+// 返回整理背包结果
+message NsSortItem
+{
+	required int32		ContainerType		= 		1;					// 移动到容器类型
+	repeated int64 		Id					= 		2;					// 整理后的物品ID
+	repeated int32		Count				= 		3;					// 整理后的物品堆叠
+}
+
+// 回收道具
+message NcRecoveryItem
+{
+	required  int32	    RecoveryType		=        1;					// 回收类型
+	repeated  int64		ItemIdList			= 		 2;					// 道具ID
+	repeated  int32     ItemCountList       =        3;                 // 道具数量
+}
+
+// 回收道具
+message NsRecoveryItem
+{
+	required int32		Result				=		1;					// 返回强化结果    enum:ItemOperationResult
+	required int32		MoneyType			= 		2;					// 回收货币类型
+	required int32		Value				= 		3;					// 回收金额
+}
+
+// 强化装备槽
+message NcForgeSlot
+{
+	required int32		Id					=		1;					// 装备槽位ID
+	required bool		Flag				=		2;					// 标示 0-不使用神佑 1-使用神佑
+	required int32 		UseBinding			=		3;					// 是否优先使用绑定
+}
+
+// 强化装备槽
+message NsForgeSlot
+{
+	required int32		 Result				=		1;					// 返回强化结果    enum:ItemOperationResult
+	required PbEquipSlot Slot				=		2;					// 强化后的槽位信息
+}
+
+// 升级强化装备
+message NcStrengthenEquip
+{
+	required int64 Id                        =       1;                  // 强化装备的ID
+	repeated int64 ConsumeIds                =       2;                  // 消耗装备的ID
+}
+
+// 升级强化装备
+message NsStrengthenEquip
+{
+	required int32 Result                   =       1;                  // 升级结果
+}
+
+//装备打孔
+message NcPunchEquip
+{
+	required int64 Id                       =       1;                  // 打孔装备ID
+	required int32 UseBinding               =       2;                  // 是否优先使用绑定
+}
+
+//装备打孔
+message NsPunchEquip
+{
+	required int32 Result                   =       1;                  // 打孔结果
+}
+
+//追加装备
+message NcAppendSlot
+{
+	required int32		Id					=		1;					// 装备槽位ID
+	required int32 		UseBinding			=		2;					// 是否优先使用绑定
+}
+
+//追加装备
+message NsAppendSlot
+{
+	required int32		 Result				=		1;					// 返回追加结果   enum:ItemOperationResult
+	required PbEquipSlot Slot				=		2;					// 强化后的槽位信息
+}
+
+//进阶装备
+message NcUpgradeEquip
+{
+	required int64		Id					=		1;					// 装备ID
+	repeated int64      CostEquipIds        =       2;                  // 消耗装备ID
+}
+
+//进阶装备
+message NsUpgradeEquip
+{ 
+	required int32		Result				=		1;					// 返回升级结果   enum:ItemOperationResult
+	required int64      UpgradeId           =       2;                  // 进阶后装备ID
+}
+
+//装备洗炼
+message NcWashPropsEquip
+{
+	required int64		Id					=		1;					// 装备ID
+	required int32 		UseBinding			=		2;					// 是否优先使用绑定
+	repeated int32      LockPunchs          =       3;                  // 锁定的孔位
+}
+
+//装备洗炼
+message NsWashPropsEquip
+{
+	required int32		Result				=		1;					// 返回传承结果   enum:ItemOperationResult
+}
+
+//护符合成
+message NcAmuletCompose
+{
+	required int64 LeftAmuletId             =       1;  //合成护符1ID
+	required int64 RightAmuletId            =       2;  //合成护符2ID
+}
+
+//护符合成
+message NsAmuletCompose
+{
+	required int32      Result              =       1;
+}
+
+//装备附加属性强化
+message NcEquipAddiAttStrengthen
+{
+	required int64 EquipId                    =     1;  //装备Id
+    required int32 AttIndex                   =     2;  //属性索引	
+}
+
+//装备附加属性强化
+message NsEquipAddiAttStrengthen
+{
+	required int32      Result              =       1;
+}
+
+//传承装备
+message NcInheritEquip
+{
+	required int64		FromId				=		1;					// 装备ID1
+	required int64		ToId				=		2;					// 装备ID2
+	required int32		InheritType			= 		3;					// 传承类型
+	required int32 		CostType			= 		4;					// 花销类型
+}
+
+//传承装备
+message NsInheritEquip
+{
+	required int32		Result				=		1;					// 返回传承结果   enum:ItemOperationResult
+}
+
+//道具合成
+message NcComposeItem
+{
+	required int32	    ComposeId			=		1;					// 合成表对应ID
+	required int32 		UseBinding			=		2;					// 是否优先使用绑定
+}
+
+//道具合成结果
+message NsComposeItem
+{ 
+	required int32		Result				=		1;					// 返回合成结果   enum:ItemOperationResult
+}
+
+//执行兑换
+message NcExchangeItem
+{
+	required int32		ExchangeType		=		1;					// 兑换类型
+	required int32		ExchangeId			=		2;					// 兑换Id
+}
+
+//返回兑换结果
+message NsExchangeItem
+{
+	required int32		Result				=		1;					// 返回兑换结果   enum:ItemOperationResult
+}
+
+//执行购买
+message NcBuyItem
+{
+	required int32		ShopType				=		1;				// 购买类型
+	required int32		BuyId				=		2;					// 购买Id
+	required int32      BuyNum				= 		3;					// 购买数量
+}
+
+//返回购买结果
+message NsBuyItem
+{
+	required int32		Result				=		1;					// 返回兑换结果   enum:ItemOperationResult
+}
+
+// 道具装换
+message NcChangeItem
+{
+	required int32		ItemChangeType		=		1;					// 转换类型
+}
+
+message NsChangeItem
+{
+	required int32		Result				= 		1;					// 转换结果
+}
+
+//查看物品
+message NcViewItem
+{
+	required	int64	PlayerId			=		1;					// 物品归属人ID
+	required	int64	ItemId				=		2;					// 物品ID
+}
+
+message NsViewItem
+{
+	required	PbItem	Item				=		1;					// 物品详细属性
+}
+
+//显示获取道具TIPS
+message NsAddItemTips
+{
+	required	int32	ItemId				=		1;					// 物品ID
+	optional	int32	ItemCount			=		2[default = 1];		// 物品数量
+	optional 	int32	Quality				=		3[default = 0];		// 品质
+	optional	int32   FromType			=		4[default = 0];		// 物品来源
+}
+
+// 穿装备
+message NcUseEquip
+{
+	required	int64	ItemId				=		1;					// 物品ID
+}
+
+// 脱装备
+message NcUnEquip
+{
+	required	int64	ItemId				=		1;					// 物品ID
+}
+
+// 装备修理
+message NcEquipRepair
+{
+}
+
+message NsEquipRepair
+{
+	required	int32	RepairCount			=		1;					// 修复的物品数量
+	required	int32	CostGoid			=		2;					// 花销的金币数量	
+}
+
+message NsAddItemCD
+{
+	required  	PbItemCD CD					=		1;					// CD信息	
+}
+
+////////////////////////////////////////////////////体魄////////////////////////////////////////////////////
+
+// 体魄包含哪几个部位
+enum EPhysiquePart
+{
+	East 		= 1;  //东
+	SouthEast 	= 2;  //东南
+	South 		= 3;  //南
+	SouthWest 	= 4;  //西南
+	West 		= 5;  //西
+	NorthWest 	= 6;  //西北
+	North 		= 7;  //北
+	NorthEast 	= 8;  //东北
+}
+
+// 体魄属性
+message PbPhysiqueAtt
+{
+	required int32           	Type        = 1;				// 属性Type
+	required int32           	Val         = 2;			  	// 属性值
+	required int32           	StarLevel   = 3;			  	// 星级
+}
+
+// 体魄属性组
+message PbPhysique
+{
+	required	EPhysiquePart		Part				= 		1;				// 部位
+	required 	int32 				Lv					= 		2;				// 基础属性等级
+	required 	string           	RandomAffix     	= 		3;				// 随机词缀
+	repeated 	PbPhysiqueAtt 		RandomAtts			= 		4;				// 随机属性
+	required 	string           	ActivatAffix     	= 		5;				// 激活词缀
+	repeated 	PbPhysiqueAtt       ActivateAtts      	=		6;				// 激活属性
+	required 	bool       			IsActivate      	=		7;				// 激活属性是否激活
+}
+
+// 体魄初始化
+message NsPhysiqueInit
+{
+	repeated	PbPhysique			Physiques			=		1;					// 体魄
+}
+
+//体魄基础属性激活（只激活一次，最多一次激活所有基础属性）
+message NcPhysiqueActivate
+{
+	required	EPhysiquePart		Part				=		1;					// 体魄升级的部位
+	required	int64				ItemId				=		2;					// 激活基础属性物品ID
+}
+
+message NsPhysiqueActivate
+{
+	required	EPhysiquePart		Part				=		1;					// 体魄升级的部位
+	required 	int32 				Lv					= 		2;					// 基础属性等级
+}
+
+// 体魄升级
+message NcPhysiqueLevelUp
+{
+	required	EPhysiquePart		Part				=		1;					// 体魄升级的部位
+	required 	int32 				CostId				= 		2;					// 消耗ID
+}
+
+message NsPhysiqueLevelUp
+{
+	required	EPhysiquePart		Part				=		1;					// 体魄升级的部位
+	required 	int32 				Lv					= 		2;					// 基础属性等级
+}
+
+// 体魄洗炼
+message NcPhysiqueWashProps
+{
+	required	EPhysiquePart		Part				=		1;					// 体魄洗炼的部位
+	required 	int64				ItemId				=		2;					// 消耗的物品ID
+}
+
+message NsPhysiqueWashProps
+{
+	required	EPhysiquePart		Part				=		1;					// 体魄洗炼的部位
+	required 	string           	RandomAffix     	= 		2;					// 随机词缀组
+	repeated	PbPhysiqueAtt		RandomAtts			=		3;					// 随机属性组
+	required 	string           	ActivateAffix     	= 		4;					// 激活词缀组
+	repeated	PbPhysiqueAtt		ActivateAtts		=		5;					// 激活属性组
+	required	EPhysiquePart		PrePart				=		6;					// 上一个部位
+	required 	bool       			IsActivatePrePart   =		7;					// 上一个部位激活属性是否激活
+	required 	bool       			IsActivate      	=		8;					// 激活属性是否激活
+}
+/////////////////////以下为重写的物品相关协议
+
+//物品属性枚举
+enum ItemIntAttrType  //目前通过此枚举以及一个BitSet32来控制物品的属性更新
+{
+	option allow_alias	=	true;
+	Start       = 0;
+	Count       = 0;					// 堆叠数量
+	IsBind      = 1;					// 是否绑定
+	BagIdx      = 2;					// 所处的包格
+	durability  = 3;                                        // 耐久值
+	Num         = 4;                                        
+}
+
+// 物品类型
+enum ItemType
+{
+        option allow_alias  =  true;
+	ItemTypeStart  = 0;
+	Equipment      = 0;				// 装备
+        Prop           = 1;					// 道具
+        Material       = 2;				// 材料
+	TalentCard     = 3;             // 天赋卡片
+	Medicine       = 4;				// 药品
+	BossCard       = 5;				// BOSS卡片
+	BossSpellCard  = 6;			// BOSS技能卡片
+	EliteCard      = 7;			// 精英怪卡片
+	DeviceCard     = 8;				// 机关卡片
+	EquipCard      = 9;				// 装备卡
+	PassiveCard    = 10;			// 被动卡
+	ItemTypeEnd    = 10;
+}
+
+// 装备类型
+enum EquipmentType
+{
+    option allow_alias	=	true;
+    ET_Invaild = -1;
+    ET_Start = 0;
+    Helmet = 0;                  //头盔
+    Armor = 1;                   //铠甲
+    Bracers = 2;                 //护手
+    Pants = 3;                   //护腿
+    Boots = 4;                   //鞋子
+    Jewelry = 5;                 //项链
+    Ring = 6;                    //戒指
+    BlackDonkeyFoot = 7;         //黑驴蹄子
+    Gun = 8;                     //副武器
+    Weapon = 9;                  //武器
+    Fashion = 10;                //时装
+    ET_NUM = 11;
+}
+
+// 武器类型
+enum WeaponType
+{
+        option allow_alias	=	true;
+        WT_Invaild      = 0;
+        WT_Start        = 1;
+	ClawWeapon      = 1;     //爪子
+	SwordWeapon     = 2;     //剑
+	StickWeapon     = 3;     //棍子
+	HammerWeapon    = 4;     //锤子
+	GunWeapon       = 5;     //枪
+	WT_NUM          = 6;
+}
+
+// 装备消息结构
+message PbEquip
+{
+
+}
+
+// 物品消息结构
+message PbItem
+{
+	required int64		Id			=	1;						//流水ID
+	required string		ItemName		=  	2;						//物品ID
+	required uint32		UpdateFlg		=	3;						//Int类型的数据是否被更新了
+	repeated int32		IntAttrs		=	4;						//Int类型的数据
+	optional PbEquip	Equip			=	5;	 					//装备属性
+	optional bool       IsShow			=	6;						//客户端是否显示这次更新
+}
+
+message PbItemCD
+{
+        required    string      ItemName                          = 1;                 // 物品名称
+	required    uint32      ElapsedTime                       = 2;                 // 已经过了多久
+	required    uint32      CD                                = 3;                 // cd总时长
+}
+
+//更新背包
+message NsItemUpdate
+{
+	required	NsContainer	pb		=	1;	
+}
+
+//初始化背包
+message NsItemInit
+{
+	required	NsContainer	pb		=	1;	
+}
+
+//更新装备
+message NsEquipUpdate
+{
+	required	NsContainer	pb		=	1;	
+}
+
+// 背包消息结构
+message NsContainer
+{
+	repeated PbItem Items	      =	  1;						       // 物品列表
+}
+
+
+// 移动物品
+message NcMoveItem
+{
+	required int32 FromIdx        =      1;                                                 //从哪里来
+	required int32 ToIdx          =      2;							//到哪里去
+}
+
+// 拆分物品
+message NcSplitItem
+{
+	required int64 Id            =      1;                                                 //需要拆分的物品ID
+	required int32 Count         =      2;						       //拆出来多少个
+}
+
+// 删除物品
+message NcRemoveItem
+{
+	required int64 Id            =      1;                                                 //需要删除的物品ID
+}
+
+message NsRemoveItem
+{
+	required int64 Id            =      1;                                                 //被从背包内挪出的物品
+}
+
+// 整理背包
+message NcSortItem
+{
+
+}
+
+// 根据ID使用物品
+message NcUseItemById
+{
+        required int64 Id            =      1;                                                 //需要使用的物品ID
+	required int32 Count	     =      2;                                                 //使用数量
+	required int64 TargetId	     =      3;                                                 //目标对象的ID
+}
+
+// 使用物品
+message NcUseItemByName
+{
+        required string Name                 =      1;                                                 //需要使用的物品名字
+	required int32  Count	             =      2;                                                 //使用数量
+	required int64  TargetId	     =      3;                                                 //目标对象的ID
+}
+
+message NsSyncItemCD
+{
+        repeated PbItemCD CDs            =      1;                                                     //物品cd表
+}

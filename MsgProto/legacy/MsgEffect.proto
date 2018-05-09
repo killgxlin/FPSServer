@@ -1,0 +1,19 @@
+package Msg;
+
+import "protos/MsgBaseDefine.proto";
+
+message NsSceneEffect
+{
+	required PbVec3 Position = 1;
+	required string EffectName = 2;
+	required PbVec3 EulerAngle = 3;
+}
+
+message NsEntityEffect
+{
+    required int64 EntityID = 1;
+	required string SlotName = 2;
+	required string EffectName = 3;
+}
+
+

@@ -1,0 +1,40 @@
+package Msg;
+
+// 战斗单元状态类型
+enum UnitStateType
+{
+	option allow_alias=true;
+	
+	UST_Start			=	0;
+
+	Dead				=	0;	// 死亡
+	SuperArmor			=	1;	// 霸体
+	InvisibleToSpell	= 	2; 	// 对技能不可见
+	MinDamge			=	3;	// 最小损伤 1点伤害
+	Rage				=	4;	// 狂暴
+	InSafeZone			=	5;	// 安全区状态
+	Defense				= 	6;	// 防御
+	Combat				=	7;	// 战斗
+	PvpCombat			=	8;	// PVP战斗状态
+	ForbidSpell			=	9;  // 禁止施放技能
+	Stun				=	10; // 眩晕
+	Immune				=	11;	// 免疫
+	ForbidOccupyZone 	=   12;	// 无法占领资源
+	Stealth				= 	13; // 隐身
+	Midair				= 	14; // 空中
+	Immobilize			= 	15;	// 定身
+	UnAutoSelected		=	16;	// 不可被自动选中
+	UnSelectedCanDamage	=	17;	// 不可选中能被伤害
+	
+	UST_End				=	18;
+}
+
+// 消息 - 改变战斗单元状态
+message NsChangeUnitState
+{
+	required int64	Id		=	1;		// 战斗单元id
+	required int32	Type	=	2;		// 状态类型
+	required bool	Apply	=	3;		// 设置还是取消
+}
+
+

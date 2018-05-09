@@ -1,0 +1,92 @@
+package Msg;
+
+// 点击物体
+message NcClickEntity
+{
+	optional int64				EntityId			=	1; //EntityID
+}
+
+// 点击事件类型
+enum ClickEntityType
+{
+	None		=	0;	//无事件
+    DropItems	=	1;	//掉落包
+}
+
+//物品
+message PbItemEntry
+{
+	optional string				fileName			=	1; //文件名
+	optional string				icon				=	2; //图标
+	optional int32				type				=	3; //物品类型
+	optional int32				subType				=	4; //子类型
+	optional int32				quality				=	5; //品质
+	optional int32				stackCount			=	6; //堆叠数量
+	optional int32				allowableMaxLevel	=	7; //最高等级
+	optional int32				allowableMinLevel	=	8; //最低等级
+	optional int32				count				=	9; //数量
+	optional int32				index				=	10;//物品标识
+}
+
+// 点击物体
+message NsClickEntity
+{
+	optional int64				EntityId			=	1;  //EntityID
+	optional ClickEntityType	type				=	2;  //点击事件类型
+	repeated PbItemEntry		items				=	3;	//掉落包中的物品组
+}
+
+message	NcPickUpOne
+{
+	optional int64				EntityId			=	1; //EntityID
+	optional int32				index				=	2; //物品标识
+}
+
+message	NcPickUpAll
+{
+	optional int64				EntityId			=	1; //EntityID
+}
+
+message PbViewItemEntry
+{
+	optional int32				index				=	1; //物品标识
+	optional string				fileName			=	2; //文件名
+	optional string				icon				=	3; //图标
+	optional int32				count				=	4; //数量
+}
+
+message	NsPickUpOne
+{
+	optional int64				EntityId			=	1; //EntityID
+	optional PbViewItemEntry	fileName			=	2; //物品
+}
+
+message	NsPickUpAll
+{
+	optional int64				EntityId			=	1; //EntityID
+	repeated PbViewItemEntry	fileNames			=	2; //物品列//暂时不用，如若需求增加为未捡起的物品返回掉落包则需要使用
+}
+
+message PbEditLootFixEntry
+{
+	optional int64				NpcId				=	1; //被编辑的物体ID
+	optional bytes				LootFixEntry		=	2; //编辑的掉落
+}
+
+// 交互状态
+enum OpenPickUpWindowState
+{
+	N			=	0;
+    Open		=	1;	//打开
+	Close		=	2;	//关闭
+}
+
+message PbOpenPickUpWindow
+{
+	optional	int64					EntityID=	2;	//交互EntityID
+	optional	OpenPickUpWindowState	State	=	1;	//窗口打开状态
+}
+
+message PbEditLootFixEntrySuccess
+{
+}

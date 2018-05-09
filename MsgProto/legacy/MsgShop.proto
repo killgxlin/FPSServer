@@ -1,0 +1,195 @@
+package Msg;
+
+import "protos/MsgGoods.proto";
+
+// 商店类型
+enum ShopType
+{
+	BuyTypeStart	 		= 0;			// 购买类型起始
+	TestShop		 		= 1;			// 测试商店
+	CommonShop		 		= 2;			// 常用商店
+	ConsumptionShop	 		= 3;			// 消耗商店
+	BindDiamondShop	 		= 4;			// 绑钻商店
+	DrugsShop		 		= 5;			// 药品商店
+	BuffShop		 		= 6;			// BUFF商店
+	BlackShop		 		= 7;			// 黑市商店
+	MaterialShop	 		= 8;			// 材料商店
+	EquipShop		 		= 9;			// 装备商店
+	HangZhouDrugsShop		= 10;			// 杭州药品商店
+	HangZhouBlackShop		= 11;			// 杭州黑市商店
+	HangZhouMaterialShop	= 12;			// 杭州材料商店
+	HangZhouEquipShop		= 13;			// 杭州装备商店
+	BuyTypeEnd		 		= 14;			// 购买类型终止
+}
+
+//用于刷新商品数量
+message NsBuyShopItem
+{
+	required int32			EntryId		=		1;					// 商品EntryId
+	required int32      	SurplusNum	= 		2;					// 商品剩余数量
+}
+
+
+////////////随机商店相关//////////////////////////
+
+enum RandShopType
+{
+	option allow_alias=true;
+	RandShopStart             =  1;
+	BlackMart                 =  1;
+	RandShopEnd               =  2;
+}
+
+//随机商店初始化
+message NcPlayerInitRandShop
+{
+	required RandShopType      ShopType              =    1;
+}
+
+//随机商店初始化
+message NsPlayerInitRandShop
+{
+	required PbRandShop        RandShop              =    1;
+}
+
+//刷新随机商店
+message NcRefreshRandShop
+{
+	required RandShopType      ShopType              =    1;
+}
+
+//刷新随机商店
+message NsRefreshRandShop
+{
+	required RandShopType      ShopType              =    1;
+	required int64             NextRefreshShopTime   =    2;
+	repeated PbRandShopItem    Items                 =    3;
+}
+
+//购买商店物品
+message NcBuyRandShopItem
+{
+	required RandShopType      ShopType              =    1;
+	required int32             Pos                   =    2;
+	required int32             CfgId                 =    3;
+}
+
+//更新随机商店物品状态
+message NsUpdateRandShopItem
+{
+    required RandShopType      ShopType              =    1;
+	required int32             Pos                   =    2;
+    required bool              IsSell                =    3;	
+}
+
+message PbRandShop
+{
+	required RandShopType      ShopType              =    1;
+	required int64             NextRefreshShopTime   =    2;
+	repeated PbRandShopItem    Items                 =    3;
+}
+
+message PbRandShopItem
+{
+	required int32      ItemId                =    1;
+	required int32      SellNumber            =    2;
+	required bool       IsBind                =    3;
+	required bool       IsSell                =    4;
+	required PbGoods    Cost                  =    5;
+	required int32      DiscountId            =    6;
+}
+
+
+///////////////////////阶梯商店相关/////////////////////////
+
+enum PriceRiseType
+{
+	option allow_alias=true;
+	PriceRiseStart             =  1;
+	ItemRise	               =  1;					//Item类型
+	RValueRise				   =  2;					//RValue类型
+	PriceRiseEnd               =  3;
+}
+
+//阶梯价格初始化
+message NcBuyPriceRiseInit
+{
+
+}
+
+//阶梯价格初始化返回
+message NsBuyPriceRiseInit
+{
+	repeated ShopItem 	Items					=	1;	//商品列表
+}
+
+//购买阶梯价格商店物品
+message NcBuyPriceRiseItem
+{
+	required int32 		ItemId				  	=	1;	//id
+	required int32		Num						=	2;	//购买次数
+}
+
+//购买阶梯商店物品返回
+message NsBuyPriceRiseItem
+{
+	required int32 		ItemId				  	=	1;	//id
+	required int32		Count					=	2;	//购买次数
+}
+
+
+/////////////////////以下为重写的商店相关协议
+
+
+//商店商品
+message ShopItem
+{
+	required string GoodsName	      =		1; // 商品名称GoodsEntity的filename
+	required string GoodsIcon	      =		2; // 商品图标
+	required int32  MoneyType	      =		3; // 货币类型
+	required int32  Price		      =		4; // 售价
+}
+
+//服务器返回的商店信息
+message NsInitShopInfo
+{
+        required int64    NpcID         =               1; // 挂着这个商店的NPCID
+	required string	  ShopName	=		2; // 商店名称ShopEntity的filename
+	repeated ShopItem Items		=		3; // 商店内的商品
+}
+
+//购买物品
+message NcBuyShopItem
+{  
+        required int64     NpcID        =               1; // 挂着这个商店的NPCID
+	required string    ShopName	=		2; // 商店名称ShopEntity的filename
+	required int32     GoodsID	=		3; // 商品在ShopEntity的GoodsList中的位置
+	required int32     Num		= 		4; // 商品数量
+}
+
+//删除商店
+message NcDelShop
+{
+        required int64    NpcID         =               1; // 挂着这个商店的NPCID
+	required string	  ShopName	=		2; // 商店名称ShopEntity的filename
+}
+
+//服务器返回的编辑商店信息
+message PbEditShop
+{
+        required int64    NpcID         =               1; // 挂着这个商店的NPCID
+	required bytes	  ShopEntry	=		2; // 商店的配置
+}
+
+enum ShopRetType
+{
+	SRT_SaveSuccess             =  1;                          //商店编辑存储成功
+	SRT_DelSuccess	            =  2;			   //商店删除成功
+	SRT_BuySuccess              =  3;                          //购买成功
+	SRT_Count		    =  4;			   //总数
+}
+//服务器返回商店信息刷新成功的消息
+message NsShopRet
+{
+        required int32  ret    = 1;     //返回商店相关操作结果  
+}

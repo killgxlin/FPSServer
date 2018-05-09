@@ -1,0 +1,99 @@
+package Msg;
+
+// 日常重置类次数枚举
+enum RValType
+{
+	option allow_alias=true;
+	
+	Start					=	0;
+	
+	ChangeTimesStart				= 	0;
+	GoldChangeTimes					=	0;		// 金币转换次数
+	BlindDiamondChangeTimes			=	1;		// 绑钻转换次数	
+	DiamondChangeTimes				=	2;		// 钻石转换次数
+	ExploitsToBlessing				=   3;		// 战功兑换祝福次数
+	ExploitsToLift					=	4;		// 战功兑换生命次数
+	ExploitsToSpark					=	5;		// 战功兑换星火次数
+	ExploitsToFeather				=	6;		// 战功兑换羽毛次数
+	UsedItemByAchievement			=	7;		// 物品使用-成就印记使用限制
+	UsedItemByReputation			=	8;		// 物品使用-声望印记使用限制
+	UsedItemByFirecrackers			=	9;		// 物品使用-爆竹使用限制
+	UsedItemByBullion				=	10;		// 物品使用-金条使用限制
+	UsedItemByAtonement				=	11;		// 物品使用-赎罪药水使用限制
+	DailyBuyWarContributionByGold	=	12;		// 每日金币购买战功次数
+	DailyBuyWarContributionByItem	=	13;		// 每日物品购买战功次数	
+	CrystalExchangeMaya				=	14;		// 魔精兑换玛雅
+	CrystalExchangeBlessing			=	15;		// 魔精兑换祝福
+	CrystalExchangeSoul				=	16;		// 魔精兑换灵魂
+	CrystalExchangeLife				=	17;		// 魔精兑换生命
+	CrystalExchangeFeather			=	18;		// 魔精兑换羽毛
+	CrystalExchangeSpark			=	19;		// 魔精兑换星火
+	CrystalExchangeTriple			=	20;		// 魔精兑换三倍经验药水
+	CrystalExchangeResurrection		=	21;		// 魔精兑换复活
+	CrystalExchangeStrength			=	22;		// 魔精兑换力量
+	CrystalExchangeAgility			=	23;		// 魔精兑换敏捷
+	CrystalExchangeManual			=	24;		// 魔精兑换体力
+	CrystalExchangeExcellent		=	25;		// 魔精兑换卓越
+	CrystalExchangeLucky			=	26;		// 魔精兑换幸运	
+	WorshipTimes					=	27;		// 膜拜次数
+	RespectTimes					=	28;		// 崇拜次数
+	FreeResurrectTimes				=	29;		// 每日免费复活次数
+	UsedItemLimit1					=	30;		// 道具使用限制次数1
+	UsedItemLimit2					=	31;		// 道具使用限制次数2
+	UsedItemLimit3					=	32;		// 道具使用限制次数3
+	UsedItemLimit4					=	33;		// 道具使用限制次数4
+	UsedItemLimit5					=	34;		// 道具使用限制次数5
+	UsedItemLimit6					=	35;		// 道具使用限制次数6
+	UsedItemLimit7					=	36;		// 道具使用限制次数7
+	UsedItemLimit8					=	37;		// 道具使用限制次数8
+	UsedItemLimit9					=	38;		// 道具使用限制次数9
+	UsedItemLimit10					=	39;		// 道具使用限制次数10
+	UsedItemLimit11					=	40;		// 道具使用限制次数11
+	UsedItemLimit12					=	41;		// 道具使用限制次数12
+	UsedItemLimit13					=	42;		// 道具使用限制次数13
+	UsedItemLimit14					=	43;		// 道具使用限制次数14
+	UsedItemLimit15					=	44;		// 道具使用限制次数15
+	UsedItemLimit16					=	45;		// 道具使用限制次数16
+	UsedItemLimit17					=	46;		// 道具使用限制次数17
+	UsedItemLimit18					=	47;		// 道具使用限制次数18
+	UsedItemLimit19					=	48;		// 道具使用限制次数19
+	UsedItemLimit20					=	49;		// 道具使用限制次数20
+	
+	MatchInstanceEnterTime1			=	50;		// 匹配竞技场进入次数
+	MatchInstanceEnterTime2			=	51;		// 匹配竞技场进入次数
+	MatchInstanceEnterTime3			=	52;		// 匹配竞技场进入次数
+	MatchInstanceEnterTime4			=	53;		// 匹配竞技场进入次数
+	MatchInstanceEnterTime5			=	54;		// 匹配竞技场进入次数
+	MatchInstanceEnterTime6			=	55;		// 匹配竞技场进入次数
+	MatchInstanceEnterTime7			=	56;		// 匹配竞技场进入次数
+	MatchInstanceEnterTime8			=	57;		// 匹配竞技场进入次数
+	MatchInstanceEnterTime9			=	58;		// 匹配竞技场进入次数
+
+	LifeSkillStamina                =   59;     // 生活技能精力
+	RandShopRefreshTime             =   60;     // 随机商店刷新次数
+	TeamTest						=	61;		// 组队的测试数据
+	TeamInstanceTimes               =   62;     // 组队副本每日次数
+	Power							=	63;		// 体力
+	PowerBuy						=	64;		// 体力购买次数
+	End								=	65;
+}
+
+// 消息 - 某个数值的当前值改变
+message NsRValChange
+{
+	required int32	Type	=	1;			// 类型
+	required int32	Val		=	2;			// 当前值
+}
+
+// 消息 - 某个数值的上限值变化
+message NsRValLimitChange
+{
+	required int32 Type		=	1;			// 类型
+	required int32 Limit	=	2;			// 当前上限值
+}
+
+message NsPlayerInitRVal
+{
+	repeated int32 	Cur		=	1;			// 当前使用值
+	repeated int32	Limit	=	2;			// 总值
+}

@@ -1,0 +1,24 @@
+package Msg;
+
+// NPC脑袋上的叹号或问号 Mask位
+enum NpcHatBit
+{
+	option allow_alias=true;
+	Todo			=	1;				// 有任务可接
+	Doing			=	2;				// 有任务在做
+	Done            =   4;              // 有任务可交
+}
+
+// 哪个NPC脑袋上有什么符号
+message PbNpcHat
+{
+    required int64  NpcId		= 1;	// NPC ID
+	required uint32 HatFlags	= 2;	// 头顶符号 位标记
+}
+
+// 通知客户端哪个NPC脑袋上有哪些符号
+// - 没提及的NPC脑袋上的符号保持不变
+message NsUpdateNpcHat
+{
+    repeated PbNpcHat NpcHats = 1;
+}

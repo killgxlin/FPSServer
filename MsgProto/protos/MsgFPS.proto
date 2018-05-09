@@ -1,0 +1,96 @@
+package Msg;
+
+message NcHandShake
+{
+	required string Token = 1;
+}
+
+message NsHandShake
+{
+	required int64 PlayerId = 1;
+}
+
+message NsRoomUpdate
+{
+	repeated int64 ExistPlayers = 2;
+	optional int64 AddedPlayer = 3;
+	optional int64 RemovedPlayer = 4;
+}
+
+message NcRoomCmd
+{
+	required string Cmd = 2;
+}
+
+message NsRoomNotify
+{
+	required string Cmd = 2;
+}
+
+// -----------------------------------------------
+
+enum PbSyncObjAttType
+{
+	Int32 = 0;
+	Int64 = 1;
+	String = 2;
+	Float = 3;
+	Double = 4;
+	Bool = 5;
+}
+
+
+message PbSyncObjAtt
+{
+	required int32 Index = 1;
+	required int32 PbSyncObjAttType = 2;
+	optional int32 N32Val = 3;
+	optional int64 N64Val = 4;
+	optional string StrVal = 5;
+	optional float FloatVal = 6;
+	optional bool BoolVal = 7;
+}
+
+message PbSyncObj
+{
+	required int64 Id = 1;
+	required string Type = 2;
+	repeated PbSyncObjAtt Atts = 3;
+}
+
+message NsSyncObjAdded
+{
+	repeated PbSyncObj Added = 1;
+}
+
+message NsSyncObjRemoved
+{
+	repeated int64 Removed = 1;
+}
+
+message NsSyncObjRefreshed
+{
+	repeated PbSyncObj Refreshed = 1;
+}
+
+message NsSyncSceneEnter
+{
+}
+
+message NsSyncSceneExit
+{
+}
+
+message NcRPC
+{
+	required int64 Id = 1;
+	required string Type = 2;
+	required bytes Bytes = 3;
+}
+
+message NsRPC
+{
+	required int64 Id = 1;
+	required string Type = 2;
+	required bytes Bytes = 3;
+}

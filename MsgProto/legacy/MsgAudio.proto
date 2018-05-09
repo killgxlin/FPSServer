@@ -1,0 +1,25 @@
+package Msg;
+
+import "protos/MsgBaseDefine.proto";
+
+message Ns3DSceneAudio
+{
+	required PbVec3 Position = 1;
+	required string BankName = 2;
+	required string SoundName = 3;
+}
+
+message Ns3DEntityAudio
+{
+	required int64 EntityID = 1;
+	required string BankName = 2;
+	required string SoundName = 3;
+}
+
+message Ns2DAudio
+{
+	required string BankName = 1;
+	required string SoundName = 2;
+}
+
+

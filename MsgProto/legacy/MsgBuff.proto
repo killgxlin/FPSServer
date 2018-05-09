@@ -1,0 +1,63 @@
+package Msg;
+
+enum BuffSuperpositionType
+{	
+	option allow_alias = true;
+	Replace					= 0;			// 替换  
+	SuperpositionStack 		= 1;			// 叠加层数
+	SuperpositionTime 		= 2;			// 叠加时间
+}
+
+// buff的触发方式 掩码
+enum BuffTriggerType
+{
+	Default					= 0x00;			// 默认
+	OnAttack				= 0x01;			// 攻击触发
+	OnHit					= 0x02;			// 受击触发
+}
+
+// buff的移除方式
+enum BuffRemoveType
+{
+	NotRemove				=	0;
+	ShieldRemove			=	1;
+	GetHitRemove			=	2;
+	TimeOutRemove			=	3;
+	ActionRemove			=	4;
+	ChangeSenceRemove		=	5;
+	ImmuneRemove			=	6;
+	DeadRemove				=	7;
+	CastSpellRemove			=	8;
+}
+
+message PbBuff
+{
+	optional int64	OwnerId			=	1;		// 归属者Id
+	optional int32	BuffId			=	2;		// BuffId
+	optional int64  CasterId		=	3;		// 释放者ID
+	optional float	SurplusTime	 	=   4;		// 剩余时间
+	optional int32	Stack			=	5;		// 层数
+}
+
+// 同步BUFF信息
+message NsPlayerInitBuff
+{
+	repeated PbBuff BuffList		= 	1;		// BUFF列表	
+}
+
+message NsAddBuff
+{
+	required	PbBuff	Buff		=	1;		// 添加BUFF
+}
+
+message NsUpdateBuff
+{
+	required	PbBuff	Buff		=	1;		// 更新BUFF
+}
+
+message NsRemoveBuff
+{
+	required	int64	OwnerId     =   1;		// 归属者Id
+	required	int32	BuffId		=	2;		// Buff ID
+	required 	int64  	CasterId	=	3;		// 释放者ID	
+}

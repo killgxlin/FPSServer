@@ -1,0 +1,17 @@
+package Msg;
+
+message NsFindNewFormula
+{
+	required	string 			FormulaName	=	1;	// 配方名称
+}
+
+message NsMakeItemResult
+{
+	required	string			Message		=	1;	//	合成结果
+}
+
+message NcMakeItem
+{
+	required	string 			FormulaName	=	1;	//	配方名称
+	required	int32			Count		=	2;	//	合成数量
+}

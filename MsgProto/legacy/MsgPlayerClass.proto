@@ -1,0 +1,32 @@
+package Msg;
+
+enum PlayerClass
+{
+	option allow_alias=true;
+
+	PlayerClassStart = 1;
+	PlayerClass1 = 1;
+	PlayerClass2 = 2;
+	PlayerClass3 = 3;
+	PlayerClass4 = 4;
+	PlayerClass5 = 5;
+	PlayerClass6 = 6;
+	PlayerClassEnd = 7;
+}
+
+enum UnitCombatClass
+{
+	option allow_alias=true;
+	UnitCombatClassStart = 1;
+	UnitClass1 = 1;
+	UnitClass2 = 2;
+	UnitClass3 = 3;
+	UnitClass4 = 4;
+	UnitClass5 = 5;
+	UnitClass6 = 6;
+	
+	Mirror	   = 100;
+	Monster	   = 101;
+	Boss	   = 102;
+	UnitCombatClassEnd = 103;
+}

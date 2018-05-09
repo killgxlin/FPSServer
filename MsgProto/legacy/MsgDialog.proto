@@ -1,0 +1,42 @@
+package Msg;
+
+// -----------------------------------------------------------------
+// 对话npc
+// 第一次 PageId 和 ItemId不传
+// 玩家点击条目后 传 PageId和ItemId
+message NcTalkToNpc
+{
+	required int64 NpcId = 1;
+	optional string PageId = 2;
+	optional string ItemId = 3;
+}
+
+// 页面条目
+message PageItem
+{
+	required string ItemId = 1;
+	optional string ItemData = 2;
+}
+
+// 打开对话页
+message NsPage
+{
+	optional int64 NpcId = 1;
+	required string PageId = 2;
+	optional string PageData = 3;
+	repeated PageItem Items = 4;
+}
+
+// 打开状态状态
+enum OpenDialogState
+{
+	None		=	0;	//无
+    Open		=	1;	//打开
+	Close		=	2;	//关闭
+}
+
+message PbOpenDialog
+{
+	optional	int64					EntityID=	2;	//交互EntityID
+	optional	OpenDialogState			State	=	1;	//窗口打开状态
+}

@@ -1,0 +1,13 @@
+package Msg;
+
+// 更新道具数量
+message NsUpdatePropsCount
+{
+	required int32 SpellID		=	1;	// 对应的物品ID
+	required int32 Count		=	2;	// 对应物品的顺序
+}
+// 仍道具
+message NcRemoveProps
+{
+	required int32 SpellID		=	1;	// 对应的物品ID
+}

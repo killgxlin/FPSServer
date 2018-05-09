@@ -1,0 +1,397 @@
+package Msg;
+import "protos/MsgBaseDefine.proto";
+
+// 技能目标类型
+enum SpellTarget
+{
+	SectorEnemy		=	0;			// 扇形范围敌人
+	Rays			=	1;			// 射线范围敌人
+}
+
+// 目标掩码
+enum TargetType
+{
+    TTHostile  = 0x000001;
+    TTFriend   = 0x000002;
+    TTTeam     = 0x000004;
+    TTGuild    = 0x000008;
+    TTCamp     = 0x000010;
+}
+
+// 目标性质
+enum TargetNature
+{
+    TNPlayer          = 0x01;
+    TNMonster   	  = 0x02;
+    TNPet             = 0x04;
+    TNPetMonster      = 0x08;
+	TNNormalMonster   = 0x10;
+	TNBossMonster     = 0x20;
+	TNTowerMonster    = 0x40;
+}
+
+// 目标补充
+enum TargetSupplement
+{
+    TSTarget      	  = 0x01;
+    TSCaster      	  = 0x02;
+	TSExcludeTarget   = 0x04;
+	TSExcludeCaster   = 0x08;
+}
+
+// 技能类型
+enum SpellType
+{
+	STNone				= 0;
+	STCommon			= 1;
+	STThump				= 2;
+	STAnger				= 3;
+	STNum				= 4;
+}
+	
+// 技能效果类型
+enum SpellEffectType
+{
+	NoEffect		=	0;			// 无作用
+	Dmg				=	1;			// 伤害
+	Health			=	2;			// 治疗
+	CatchPet		=	3;			// 抓宠
+	ActivePet		= 	4;			// 召唤宠物
+	LetFreePet		=	5;			// 放生宠物
+	GoHome			=	6;			// 回城
+	SpellScript		=	7;			// 技能脚本
+	SwitchWeapon	=	8;			// 切换武器
+	ReplaceSpell	= 	9;			// 多阶段技能替换
+	RevertSpell		=	10;			// 多阶段技能还原
+	Dig				=	11;			// 挖地
+	SETNum			= 	12;
+}
+
+// 技能增幅类型
+enum SpellEffectIncreaseType
+{
+	SEITFixed		=	0;			// 固定值
+	SEITCasterAtt	=	1;			// 释放者属性
+	SEITTargetAtt	=	2;			// 受击者属性
+}
+
+// 行为类型
+enum ActionType
+{
+	Null			=		0;		// 无行为
+	Move            =       1;     	// 移动
+	ProcessIO       =       2;      // 与地物交互
+	UseSpell		=		3;		// 使用技能
+	Hited			=		4;		// 普通被击
+	KnockedUp		=		5;		// 击飞
+	StirUp			=		6;		// 挑起
+	Dash			=		7;		// 冲撞
+	Pull			= 		8; 		// 拖拽
+	Catch			=		9;		// 擒拿
+	Throw			=		10;		// 投掷
+}
+
+// 技能效果作用结果
+enum SpellEffectResult
+{
+	None			=		0;		// 无
+	Normal			=		1;		// 正常
+	Dodge			=		2;		// 闪避
+	LuckyStrike		=		3;		// 幸运一击
+	FatalStrike		=		4;		// 卓越一击
+	Crit			=		5;		// 暴击
+	Immune			=		6;		// 免疫
+	Behead			= 		7;		// 斩杀
+	Stun			=		8;		// 眩晕	
+	InvisibleToSpell=		9;		// 无敌
+	BreakDefense	=		10;		// 破防
+	Absorb			=		11;		// 吸收
+	SpellLock		=		12;		// 封印
+	SEREnd			=		13;
+}
+
+// 弹道类型
+enum TrajectoryType
+{
+	TraNone			= 0;		// 无
+    TraLine			= 1;		// 直线
+    TraParabola		= 2;		// 抛物线
+    TraNum			= 3;
+}
+
+enum EffectDeliverType
+{
+	Caster			=		1;		// 施法者
+	FindTarget		=		2;		// 计算目标
+	Target			=		3;		// 受击者
+	Position		=		4;		// 抛到位置
+	Master			=		5;		// 主人	
+}
+
+enum ButtonStateType
+{
+	Click			=		1;		// 点击
+	Down			=		2;		// 按下
+	Up				=		3;		// 抬起
+}
+
+// 坐标
+message PbPathNode
+{
+	required float		X			=	1;
+	required float		Y			=	2;
+	required float		Z			=	3;
+	required uint32		PolyRef		=	4;
+}
+
+// 击飞阶段
+enum KnockedUpPhase
+{
+	KUPKnockedUp	= 0;
+	KUPBounce		= 1;
+	KUPSlide		= 2;
+}
+
+// 行为结构
+message PbAction
+{
+	required int32				Type					=	1;		// 类型
+	required uint32 			StartTick				=	2;		// 行为开始时间
+	required uint32				CurTick					=	3;		// 行为当前时间
+	required float				StartX					=	4;		// 行为起始坐标
+	required float				StartY					=	5;
+	required float				StartZ					=	6;
+	required float				StartYaw				=	7;		// 行为起始朝向
+	
+	optional float				Dir						=	8;		// 移动水平方向
+	
+	optional int32				SpellId					=	9;		// 技能id，在UseSpell及被攻击的行为时出现
+	optional int64				TargetId				= 	10;		// 目标ID
+	
+	optional int32  			TargetHitVolumeIndex	=	11;		// 目标的打击体索引
+	optional int32  			SpellActionId			= 	12;		// 技能动作ID
+	optional uint32 			SpellActionStartTick	= 	13;		// 技能动作开始的时间
+	optional float  			SpellActionStartYaw		= 	14;
+	optional int32  			SpellEffectIndex		=   15;		// 技能作用效果索引，在被攻击行为时出现
+	optional SpellEffectResult	SpellEffectResult		= 	16;		// 技能作用结果，在被攻击行为时出现
+	optional float				SpeedXZ					=	17;		// 水平移动速度
+	optional int32 				ActionPhase				= 	18;		// 行为阶段
+	
+	optional MoveType			MoveType				=	19[default = MTIdle];		// 移动类型
+	repeated PbPathNode			Path					=	20;		// 路径点
+	optional uint32 			StartPolyRef    		=   21;     // 起始PolyRef
+}
+
+// 技能效果
+message PbSpellTarget
+{
+	required int64				Id					=	1;	// 目标id
+	optional int64				Dmg					=	2;
+	optional int32  			SpellEffectId		=   3;	// 技能作用效果ID
+	optional uint32				State				=	4;
+	optional PbAction			Action				=	5;
+	optional int32  			SpellEffectIndex	=   6;	// 技能效果索引
+	optional SpellEffectResult	Result  			= 	7;	// 技能作用结果
+}
+
+// 技能弹道
+message PbSpellTraTarget
+{
+	required int32  			SpellEffectIndex	=   1;	// 技能效果索引
+	required uint32				Duration			=	2;	// 持续时间
+	optional int64				Id					=	3;	// 目标id
+	optional float				Pitch				=	4;	// 俯仰
+	optional float  			BulletDstPosX		= 	5;	// 子弹目标点
+	optional float  			BulletDstPosY		= 	6;
+	optional float  			BulletDstPosZ		= 	7;
+}
+
+// 技能释放
+message NcSpellCast
+{
+	required int32	SpellId					=	1;		// 技能id
+	required float	X						=	2;		// 释放技能的起始坐标
+	required float	Y						=	3;
+	required float	Z						=	4;
+	required float	Yaw						=	5;		// 释放技能的朝向
+	optional int64  TargetId				=   6;		// 目标ID
+	optional float 	CastPitch				=	7;		// 施放俯仰
+	optional float  BulletDstPosX			= 	8;		// 子弹目标点坐标
+	optional float  BulletDstPosY			= 	9;
+	optional float  BulletDstPosZ			= 	10;
+	optional float  DigPosX					= 	11;		// 挖地点
+	optional float  DigPosY					= 	12;
+	optional float  DigPosZ					= 	13;
+}
+
+// 攻击按钮点击
+message NcAttackButtonClick
+{	
+	required int32	ButtonId				=	1;		// 按钮id
+	required ButtonStateType state			= 	2;		// 按钮状态
+}
+
+// 宠物技能释放
+message NcPetSpellCast
+{
+	required int32	SpellId					=	1;		// 技能id
+	optional int64  TargetId				=   2;		// 目标ID
+}
+
+// 释放技能
+message NsSpellCast
+{
+	required int64	AttackerId				=	1;		// 释放者id
+	required int32	SpellId					=	2;		// 技能id
+	required float	X						=	3;		// 行为起始坐标
+	required float	Y						=	4;
+	required float	Z						=	5;
+	required float	Yaw						=	6;		// 行为起始朝向
+	required uint32	Tick					=	7;		// 服务器时间
+	required uint32 State					=	8;		// UnitState
+	
+	optional int64	TargetId				=	9;		// 可选的目标id
+	optional float  TargetPosX				= 	10;		// 目标的坐标
+	optional float  TargetPosY				= 	11;
+	optional float  TargetPosZ				= 	12;
+	optional int32  TargetHitVolumeIndex	=	13;		// 目标的打击体索引
+}
+
+// 攻击按钮点击
+message NsAttackButtonClick
+{
+	required int64	PlayerId				=	1;		// 玩家Id
+	required int32	ButtonId				=	2;		// 按钮id
+	required ButtonStateType state			= 	3;		// 按钮状态
+}
+
+// 技能释放单次结果
+message NsSpellCastOp
+{
+	required int64			AttackerId		=	1;		// 释放者id
+	required int32			SpellId			=	2;		// 技能id
+	repeated PbSpellTarget	Targets			=	3;		// 目标列表
+	required uint32			Tick			=	4;		// 时间
+	required int32			HitPoint		=	5;		// 消息点索引
+	optional int32			SpellActionId	= 	6;		// 技能动作id
+}
+
+// 技能释放弹道
+message NsSpellCastTra
+{
+	required int64				AttackerId				=	1;		// 释放者id
+	required int32				SpellId					=	2;		// 技能id
+	repeated PbSpellTraTarget	Targets					=	3;		// 目标列表
+	required uint32				Tick					=	4;		// 时间
+	required int32				HitPoint				=	5;		// 消息点索引
+	optional int32				SpellActionId			= 	6;		// 技能动作id
+}
+
+// 触发技能
+message NsTriggerSpell
+{
+	required int32	SpellId					=	1;		// 技能id
+	required uint32 Duration				= 	2;		// 持续时间
+}
+
+// 开始移动
+message NsStartMove
+{
+	required int64			Id			=	1;			// 移动者id
+	required PbAction		Move		=	2;			// 移动数据
+}
+
+// 停止移动
+message NsStopMove
+{
+	required int64			Id			=	1;			// 移动者id
+	required float			X			=	2;			// 坐标
+	required float			Y			=	3;
+	required float			Z			=	4;
+	required float			Yaw			=	5;			// 朝向
+}
+
+// 打断技能
+message NcInterupteSpell
+{
+	required int32 SpellId		= 1; 	// 技能ID
+}
+message NsInterupteSpell
+{
+	required int64	UnitId		= 1;	// unit id
+	required int32	SpellId		= 2;	// 技能ID
+}
+
+// 防御
+message NcDefense
+{
+	required bool Defense		= 1;	// 是否防御
+}
+
+// 技能CD
+message PbSpellCD
+{
+	required int32 SpellId			= 1; 	// 技能ID
+	required uint32 CoolDown		= 2;	// 技能CD
+	optional uint32 ElapsedTime		= 3;	// 走过的CD时间
+}
+
+// 同步技能CD
+message NsSyncSpellCD
+{
+	repeated PbSpellCD SpellCDs		= 1; 	// 技能组		 
+}
+
+// 同步技能CD
+message NsSyncSpellDuration
+{
+	required int32 ButtonId			= 1; 	// 技能ID
+	required uint32 CastTick		= 2;	// 技能释放时间
+	required float Duration			= 3;	// 持续时间
+	optional float ElapsedTime		= 4;	// 走过的时间
+}
+
+// 变形
+message NsEntityTransform
+{
+	required 	int64			EntityId				= 1;	// ID
+	required	int32			TransformId				= 2;	// 变形ID
+}
+
+// 按钮技能改变
+message NsButtonSpellChange
+{
+	repeated PbButtonSpell  ButtonSpells				= 1;
+	optional bool 			isAllChange					= 2;	// 是否所有按钮都发生变化
+}
+
+// 同步按钮技能变化
+message NsSyncButtonSpellChange
+{
+	required 	int64 			PlayerId 				= 1;	// ID
+	required 	PbButtonSpell 	ButtonSpell 			= 2; 	// 变化的按钮技能
+}
+
+// 同步重置按钮技能
+message NsSyncResetButtonSpells
+{
+	required 	int64 			PlayerId 				= 1;	// ID
+	repeated 	PbButtonSpell 	ButtonSpells 			= 2;	// 新的技能按钮
+}
+
+// 同步攻击目标
+message NsSyncAttackTarget
+{
+	required int64	attackId							=	1;		// 攻击者Id
+	required int64  targetId							=   2;		// 目标Id
+}
+
+// 挖地
+message NsSpellDig
+{
+	required int64	attackId							=	1;		// 攻击者Id
+	required float  x									=   2;		// 坐标x
+	required float  y									=   3;		// 坐标y
+	required float  z									=   4;		// 坐标z
+	
+}

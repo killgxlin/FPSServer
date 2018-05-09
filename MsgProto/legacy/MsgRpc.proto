@@ -1,0 +1,8 @@
+package Msg;
+
+// 请求本地玩家信息
+message Packets
+{
+	required string	method		=	1;	// 标签名
+	required bytes	Parameter	=	2;	// 参数
+}

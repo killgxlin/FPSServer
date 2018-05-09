@@ -1,0 +1,82 @@
+package Msg;
+
+import "protos/MsgBaseDefine.proto";
+
+// 固定坐标跳跃结构
+message PbFixedPosJump
+{
+	required PbVec3 SrcPos 		= 1;
+	required PbVec3 DstPos		= 2;
+	required uint32 TimeCount	= 3;
+	required float  Gravity		= 4;
+}
+
+// 玩家动作同步结构
+message PbPlayerMoveAction
+{
+	required uint32						Tick					= 1;		// 时间
+	required PbVec3						Pos						= 2;		// 坐标
+    required float						Yaw						= 3;		// 朝向
+	optional float						MoveYaw					= 4;		// 移动方向
+    optional MoveType					MoveType				= 5[default = MTIdle];       	// 动作类型
+    optional int32						FootHoldType			= 6;       	// 立足点类型
+    optional int32						DirType					= 7;       	// 方向类型
+    optional int32						ResultType				= 8;        // 结果类型
+	optional bool						IsNewAction				= 9;		// 是否是新的动作
+	optional int32						AnimationHashId			= 10;		// 动作ID(某些行为用到)
+	optional PbFixedPosJump				FixedPosJump			= 11;		// 固定坐标跳跃
+	optional PbVec3						DstPos					= 12;		// 目标坐标
+	optional float						Pitch					= 13;		// 俯仰角度
+}
+
+// 玩家动作同步
+message NcSyncPlayerMove
+{
+	required PbPlayerMoveAction			Action					= 1;		// 玩家动作
+}
+
+// 玩家动作同步
+message NsSyncPlayerMove
+{
+	required int64						PlayerId				= 1;		// 玩家id
+	required PbPlayerMoveAction			Action					= 2;		// 玩家动作
+}
+
+// 同场景移动坐标
+message NcSetUnitPosition
+{
+	required int64                      UnitId                  = 1;        // unitID
+	required float                      PosX                    = 2;        // 坐标
+	required float                      PosY                    = 3;      
+	required float                      PosZ                    = 4;
+	required float                      Yaw                     = 5;       // 朝向
+}
+
+// 同场景移动坐标
+message NsSetUnitPosition
+{
+	required int64						UnitId					= 1;		// unitID	
+	required float						PosX					= 2;		// 坐标
+	required float						PosY					= 3;
+	required float						PosZ					= 4;
+	required float						Yaw						= 5;		// 朝向
+}
+
+// 设置朝向
+message NsUnitYaw
+{
+	required int64						UnitId					= 1;		// unit ID
+	required float						Yaw						= 2;		// 朝向
+}
+
+// 同步朝向
+message NcSyncYaw
+{
+	required float						Yaw						= 1;		// 朝向
+}
+
+//同步飞行能量
+message NsUnitFlyPower
+{
+	required float		power 	= 1; //能量值
+}

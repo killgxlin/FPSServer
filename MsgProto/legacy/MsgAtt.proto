@@ -1,0 +1,152 @@
+package Msg;
+import "protos/MsgTrigger.proto";
+enum Att
+{
+    option allow_alias=true;
+	AttributeStart = 0;
+	
+    BaseAttack = 0;							 //基础攻击
+	MinAttack = 1;							 //最小攻击
+    MaxAttack = 2;							 //最大攻击
+    AttackMultiplier = 3;					 //攻击提升率
+	BaseArmor = 4;							 //基础防御
+    MinArmor = 5;							 //最小防御							 
+    MaxArmor = 6;							 //最大防御
+    ArmorMultiplier = 7;				     //防御提升率
+    MaxHp = 8;								 //最大血量
+    MaxHpMultiplier = 9;					 //血量提升率
+    CriticalStrike = 10;					 //暴击
+    AntiCriticalStrike = 11;				 //韧性
+    CriticalDamage = 12;					 //暴击伤害
+    Lucky = 13;								 //幸运率
+    DamageMultiplier = 14;					 //伤害加成%
+    DamageReduction = 15;				     //伤害减免%
+    DamageBonus = 16;						 //伤害增加
+    DamageBlock = 17;						 //伤害减少
+    IgnoreArmorPecentage = 18;				 //无视防御比例	
+    Speed = 19;								 //移动加速	
+    Scale = 20;						 		 //体型放大	
+    HpRegeneration = 21;			 		 //生命回复
+	OnAttackHpRegeneration = 22;			 //攻击回血
+	OnKillHpRegeneration = 23;				 //击杀回血
+	EnergyRegeneration = 24;				 //怒气回复
+	OnAttackEnergyRegeneration = 25;		 //攻击回怒
+	OnHitEnergyRegeneration = 26;			 //受击回怒
+	OnKillEnergyRegeneration = 27;			 //击杀回怒
+	SuperArmor = 28;						 //霸体值
+	GodBless = 29;							 //神佑值
+	CommonAttackMultiplier = 30;			 //普攻伤害加成
+	CDMultiplier = 31;			 			 //技能CD系数
+	ThumpAttackMultiplier = 32;				 //重击伤害加成
+	AngerAttackMultiplier = 33;				 //怒击伤害加成
+	EnergyCutDown = 34;						 //怒气削减
+    EneryCostMultiplier = 35;				 //怒气消耗系数
+	AgainstInjuryMultiplier = 36;			 //反伤系数		
+	AttackEnemyOfClawDamageBonus = 37;		 //对持爪敌人的伤害加成系数
+	AttackEnemyOfSwordDamageBonus = 38;		 //对持剑敌人的伤害加成系数
+	AttackEnemyOfStickDamageBonus = 39;		 //对持棍敌人的伤害加成系数
+	AttackEnemyOfGunDamageBonus = 40;		 //对持枪敌人的伤害加成系数
+	AttackEnemyOfHammerDamageBonus = 41;	 //对持锤敌人的伤害加成系数	
+	GetHitEnemyOfClawDamageReduce = 42;		 //受到持爪敌人的伤害降低系数
+	GetHitEnemyOfSwordDamageReduce = 43;	 //受到持剑敌人的伤害降低系数
+	GetHitEnemyOfStickDamageReduce = 44;	 //受到持棍敌人的伤害降低系数
+	GetHitEnemyOfGunDamageReduce = 45;		 //受到持枪敌人的伤害降低系数
+	GetHitEnemyOfHammerDamageReduce = 46;	 //受到持锤敌人的伤害降低系数
+	AttLevel                        = 47;    //等级
+	AttRebirthLevel                 = 48;    //转生等级
+	AttAttackPoints                 = 49;    //连击点数
+	CarryWeight                     = 50;    //负重上限
+	WeightCount                     = 51;    //当前负重
+	MaxHungry                       = 52;    //最大饥饿值
+	HungryTickChange                = 53;    //饥饿消耗
+	AttributeEnd = 54;
+}
+
+enum eTimerAtt
+{
+        TimerAtt_Hp              = 0;
+	TimerAtt_HittedPoints    = 1;
+	TimerAtt_EnergyPoints    = 2;
+	TimerAtt_VigourPoints    = 3;
+	TimerAtt_HungryPoints    = 4;
+	TimerAtt_End             = 5;
+}
+
+// 属性改变消息
+message NsAttChange
+{
+	repeated int32 	Type	=	1;		// 改变的属性类型数组
+	repeated int32 	Val		=	2;		// 改变的属性值数组
+}
+
+// 属性改变消息
+message NsTimerAttChange
+{
+	repeated int32 	Type	=	1;		// 改变的属性类型数组
+	repeated int64 	Val		=	2;      // 改变的属性值数组
+}
+
+// 玩家属性初始化
+message NsPlayerInitAtt
+{
+    repeated int32	Atts	=	1;		// 所有属性值
+}
+
+// 属性加点模块初始化
+message NsAttBonusInitInfo
+{
+	required bool  AutoAddPoint		= 1;
+	repeated int32 AttItemBonus 	= 2;
+	repeated int32 AttlevelBonus	= 3;
+}
+
+// 手动加点
+message NcAddLevelBonus
+{
+	repeated int32 	Type			= 1;
+	repeated int32 	Val				= 2;
+}
+
+// 手动加点返回
+message NsAddLevelBonus
+{
+	repeated int32 	Type			= 1;
+	repeated int32 	Val				= 2;
+}
+
+// 重置加点
+message NcResetLevelBonus
+{
+
+}
+
+// 重置加点结果返回
+message NsResetLevelBonus
+{
+	required bool Result  			= 1;
+}
+
+// 设置自动加点标示
+message NcAutoAddPoint
+{
+	required bool AutoAddPoint		= 1;
+}
+
+// 返回自动加点标示
+message NsAutoAddPoint
+{
+	required bool AutoAddPoint		= 1;
+}
+
+// 果实属性变化消息
+message NsAttItemBonusChange
+{
+	required int32 	Type			= 1;
+	required int32 	Val				= 2;
+}
+
+
+message PbSyncAtts
+{
+	repeated PbCustomVariable Atts = 1;
+}

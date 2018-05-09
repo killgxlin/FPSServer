@@ -1,0 +1,17 @@
+package Msg;
+
+// 总统计类枚举
+enum ConditionType
+{
+	option allow_alias=true;
+	Start					=	0;
+	Clazz					=	0;		// 职业	
+	Level					=	1;		// 玩家等级
+	VipLv					=	3;		// VIP等级
+	GuildLv					=	4;		// 堂口等级
+	QuestId					=	5;		// 任务ID
+	SelfHp					=	6;		// 自身血量
+	TargetHp				=	7;		// 目标血量
+	SpellType				=	8;		// 技能类型
+	End						=	9;
+}

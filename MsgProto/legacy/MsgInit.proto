@@ -1,0 +1,62 @@
+package Msg;
+
+enum PlayerInitType
+{
+	Info	 =	1;		// 信息
+	Item	 =	2;		// 物品
+	Quest	 =	3;		// 任务
+	StarSoul =  4;      // 星魂
+	Pokedex  =  5;		// 图鉴
+	Relation =  6;		// 关系
+	Money	 = 	7;		// 货币
+	AttBonus =  8;		// 加点(果实)
+	PlayerAtt=  9;      // 玩家属性
+	RVal	 = 	10;		// RVal
+	Settings =	11;		// Settings
+	Guild    =  12;     // 堂口
+	Mail	 = 	13;		// 邮件
+	Stats	 =  14;		// 统计
+	Activity =	15;		// 活跃度
+	NeedTodo =  16;		// 今日可做
+	Buff	 =  17;		// BUFF
+	Halo	 =  18;		// 光环
+	Rune	 =  19;		// 符文
+	EquipSlot=	20;		// 装备槽位
+	Pets     =  21;		// 宠物
+	Instance =  22;		// 副本
+	BloodPool = 23;     // 血池
+	Talent   =  24;     // 天赋
+	BossCard  = 25;     // Boss卡牌
+	BossSpellCard = 26; // BOSS技能卡牌
+	EliteCard = 27;		// 精英怪卡牌
+	DeviceCard = 28;	// 机关卡牌
+	OffLineCht = 29;	// 离线聊天
+	EquipCard  = 30;	// 装备卡牌
+	Equip		=31;	// 耐久装备	
+	PassiveCard =32;	// 被动卡牌	
+	Triggers = 33;      // 触发器（自定义变量）
+}
+
+// 请求本地玩家信息
+message NcPlayerInit
+{
+	required int32 Type = 1;		// 初始化类型
+}
+
+//本地玩家初始化 - info
+//使用NsPlayerInitInfo 消息同步
+
+//本地玩家初始化 - 图鉴
+//使用NsPlayerInitPokedex消息同步
+
+//本地玩家初始化 - 关系
+//使用NsPlayerInitRelation消息同步
+
+//本地玩家初始化 - 货币
+//使用NsPlayerInitMoney消息同步
+
+//本地玩家初始化 - 属性加点
+//使用NsAttInitInfo 消息同步
+
+//本地玩家初始化 - 成就
+//使用NsPlayerInitAchievement 消息同步

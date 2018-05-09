@@ -1,0 +1,196 @@
+package Msg;
+
+// 怪物类型
+enum MonsterType
+{
+    MTNormal 		= 0;         	// 普通怪物
+    MTBoss 			= 1;           	// Boss
+	MTTower 		= 2;          	// 塔
+	MTElite			= 3;			// 精英怪
+	MTDevice		= 4;			// 机关
+	MTNum 			= 5;
+}
+
+// 移动类型
+enum MoveType
+{
+	MTIdle				=		0;
+	MTWalk				=		1;		// 走
+	MTWalkLeft			= 		2;		// 左走
+	MTWalkRight			= 		3;		// 右走
+	MTRun				=		4;		// 跑
+	MTMidairRun			= 		5;		// 悬空跑
+	MTJump				= 		6;		// 跳
+	MTWallWalk			= 		7;		// 爬墙
+    MTLadderWalk		= 		8;		// 爬梯子
+	MTCableway			=		9;		// 划索道
+	MTThrust			=		10;		// 飞行
+	MoveTypeNum			= 		11;
+}
+
+// 地物触发方式
+enum IoTriggerType
+{
+	Process		= 0;			// 采集
+	Trigger 	= 1;			// 触碰
+}
+
+// 地物触碰对象类型掩码
+enum IoTriggerTarget
+{
+	IoTTPlayer  = 0x01;			// 玩家
+    IoTTMonster = 0x02;			// 怪物
+}
+
+// 战斗效果类型
+enum CombatEffectType
+{
+	CETSpell	=	1;			// 技能   对应EquipSpellOfModelRelate表
+	CETEffect	=	2;			// 效果   对应SpellEffect表
+	CETAtt		=	3;			// 属性	  对应Att组表
+}
+
+// 操作结果枚举	
+enum OperationResult
+{
+	ORFalse		=	0;			// 失败
+	ORTrue		=	1;			// 成功	
+	OROther		=	2;			// 其他	
+}
+
+// 逻辑枚举
+enum TriggerLogic
+{
+	gt			= 	0;		// 大于
+	lt			=	1;		// 小于
+	eq			=	2;		// 等于
+	gte			=	3;		// 大于等于  >=
+	lte			=	4;		// 小于等于  <=
+	ne			=	5;		// 不等	!=
+}
+	
+// 道具来源方式
+enum FromType
+{
+	FTDefault			=	0;		// 未知
+	FTReward			=	1;		// 奖励
+	FTShopBuy			=	2;		// 商店购买
+	FTMonsterLoot		=	3;		// 怪物掉落
+	FTAutionBack		=	4;		// 拍卖退回
+	FTAutionBid			=	5;		// 拍卖竞标
+	FTPickDropBox   	=	6;		// 道具拾取
+	FTImpetrate			=	7;		// 祈福
+	FTUpgradeEquip		=	8;		// 装备进阶
+	FTComposeGoods 		=	9;		// 装备合成
+	FTNewPlayerReward	=	10;		// 新手奖励
+	FTExtractMail		=	11;		// 邮件提取
+	FTQuestLoot			=	12;		// 任务掉落
+	FTTrading			=	13;		// 交易	
+	FTSplit				=	14;		// 道具拆分
+	FTExchangeGood		=	15;		// 道具兑换
+	FTRecoveryItem		=	16;		// 道具回收
+	FTChangeGood		=	17;		// 道具转换
+	FTRewardGood		=	18;		// 礼包奖励
+	FTGMCreateItem		=	19;		// GM创建
+	FTWorship			=	20;		// 膜拜
+	FTRespect			=	21;		// 崇拜
+	FTSendGift			=	22;		// 送礼
+	FTTreasure		 	=	23;		// 宝箱
+	
+	FTAchievementReward =	50;		// 成就奖励
+	FTActivityReward	=	51;		// 活跃奖励
+	FTIOLoot			=	52;		// 地物掉落
+	FTImpetrateReward	=	53;		// 祈福奖励
+	FTCoupleInsReward	=	54;		// 副本奖励
+	FTGoldInsReward		=	55;		// 副本奖励 
+	FTExpInsReward		=	56;		// 副本奖励
+	FTJltgInsReward		=	57;		// 副本奖励
+	FTNbzzInsReward		=	58;		// 副本奖励
+	FTPlotInsReward		=	59;		// 副本奖励
+	FTQxgmInsReward		=	60;		// 副本奖励
+	FTSmccInsReward		=	61;		// 副本奖励
+	FTTeamInsReward		=	62;		// 副本奖励
+	FTTowerInsReward	=	63;		// 副本奖励
+	FTDailyQuestReward	=	64;		// 日常奖励
+	FTQuestReward		=	65;		// 任务奖励
+	FTFirstRechargeReward = 66;		// 首冲奖励
+	FTCumulativeRechargeReward = 67;// 累计充值奖励
+	FTDailyRechargeReward = 68;		// 每日充值奖励
+	FTCumulativeConsumptionReward = 69;//累计消费奖励
+	FTPlayerLevelReward	=70;		// 玩家等级奖励
+	FTCumulativeLoginReward = 71;	// 玩家累计登录奖励
+	FTDailyActivityReward = 72;		// 每日活跃度奖励
+	FTVipReward			=	73;		// VIP奖励
+	FTDailyMatchReward	=	74;		// 匹配战场每日奖励
+	FTDailyMatchKillReward	= 75;	// 匹配战场每日击杀
+	FTDailyMatchWinReward	= 76;	// 匹配战场每日获胜场奖励
+	FTWeeklyMatchWinReward	= 77;	// 匹配战场每周胜利场奖励
+	FTWeeklyMatchKillReward	= 78;	// 匹配战场每周击杀
+	FTResourceRetrieve		= 79;	// 资源找回
+	FtStageInstance 		= 80;	// 关卡副本
+	FtLottery				= 81;	// 抽卡
+}
+
+// Vector3
+message PbVec3
+{
+	required float X = 1;
+	required float Y = 2;
+	required float Z = 3;
+}
+
+message PbVec3I
+{
+	required int64 X = 1;
+	required int64 Y = 2;
+	required int64 Z = 3;
+}
+
+// 外观部位枚举
+enum AvatarPartType
+{
+	APTFace		= 0;			// 脸
+	APTFashion	= 1;			// 时装
+	APTWeapon 	= 2;			// 武器
+	APTNum		= 3;
+}
+
+// 外观结构
+message PbAvatar
+{
+	repeated int32 	Parts 		= 1;
+}
+
+// 常量
+enum Const
+{
+	MaxSpellLockTypeCount = 16;		// 技能锁定类型最大值
+}
+
+//捐赠类型
+enum DonationType
+{
+	GuildDonation              =  1;  //公会捐赠
+}
+
+// 按钮技能对应关系
+message PbButtonSpell
+{
+	required 	int32		ButtonId		=		1;
+	required	int32       SpellId			=		2;	
+}
+
+message NsScriptTest
+{
+	required  int32  Id         =  1;
+	required  string Name       =  2;
+}
+
+// 对象组类型
+enum ObjGroupType
+{
+	OGTAI		= 0;
+	OGTThreat	= 1;
+	OGTSpawn	= 2;
+	OGTNum		= 3;
+}

@@ -1,0 +1,25 @@
+package Msg;
+
+message NcTipBegin
+{
+	required int64   npcID = 1;
+}
+message NcTipEnd
+{
+
+}
+message NcClickTip
+{
+	required int64   npcID = 1;
+	required string  menu  = 2;
+}
+
+// 打开对话页
+message NsTipList
+{
+	required int64  npcID    = 1;
+	repeated string menus    = 2;
+	repeated string shorCuts = 3;
+	repeated string icons    = 4;
+}
+

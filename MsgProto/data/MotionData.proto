@@ -1,0 +1,52 @@
+package PBData;
+
+// 每一帧的移动数据
+message MotionFrame
+{
+	optional float X					= 1;
+	optional float Y					= 2;
+	optional float Z					= 3;
+}
+
+// 每一帧的骨骼数据
+message BoneFrame
+{
+	repeated float Mat					= 1;
+}
+
+// 骨骼数据
+message MotionBone
+{
+	required string BoneName			= 1;
+	repeated BoneFrame Frames			= 2;
+}
+
+// 动画的移动数据
+message MotionData
+{
+	required string Name				= 1;
+	required int32 HashId				= 2;
+	required float Length				= 3;		// 动画长度
+	optional bool Loop					= 4;		// 是否循环
+	repeated MotionFrame RootFrames		= 5;		// 根节点帧数据
+	repeated MotionBone Bones			= 6;		// 骨骼数据
+	optional float FrameTime			= 7;		// 每帧时间间隔
+	optional float EndFrameSpeedX		= 8;		// 结束帧速度
+	optional float EndFrameSpeedY		= 9;
+	optional float EndFrameSpeedZ		= 10;
+	optional float ArriveTopTime		= 11;		// 到达顶点的时间
+	repeated float Timeline				= 12;		// 时间轴
+}
+
+// 动画控制器数据
+message AnimatorData
+{
+	required string Name				= 1; 		// 名称
+	repeated MotionData Motions			= 2;		// 动画数据
+}
+
+// 动画数据文件
+message MotionFile
+{
+	repeated AnimatorData Animators		= 1;
+}

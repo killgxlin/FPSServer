@@ -1,0 +1,54 @@
+package Msg;
+
+import "protos/MsgBaseDefine.proto";
+
+message PbChunk
+{
+	required int32 ChunkId = 1;
+	optional bytes Volumes = 2;
+	optional bytes Types = 3;
+	optional uint32 Ver = 4;
+}
+
+message PbChunkModify
+{
+	required int32 ChunkId = 1;
+	repeated int32 ModifiedIndexes = 2;
+	repeated uint32 ModifiedVolumes = 3;
+	required bytes ModifiedTypes = 4;
+	optional uint32 BaseVer = 5;
+}
+
+message NsTerrainInfo
+{
+	required int32 TerrainId = 1;
+	repeated PbVec3 BubblePos = 2;
+	repeated PbVec3 MuxuePos = 3;
+}
+
+message NsChunkAdd
+{
+	required int32 TerrainId = 1;
+	repeated PbChunk Chunk = 2;
+}
+
+
+message NsChunkModify
+{
+	required int32 TerrainId = 1;
+	repeated PbChunkModify modifies = 2;
+	optional PbVec3 DigPos = 3;
+}
+
+message NcChunkReq
+{
+	required int32 TerrainId = 1;
+	repeated int32 ChunkIds = 2;
+}
+
+message NsChunkRep
+{
+	required int32 TerrainId = 1;
+	repeated PbChunk Chunks = 2;
+}
+

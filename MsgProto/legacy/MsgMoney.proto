@@ -1,0 +1,44 @@
+package Msg;
+
+// 货币枚举
+// 钻石、绑定钻石、金币、绑定金币、星魂、魔晶、声望、成就、战功、祈福积分灵晶、精灵积分、元素粉末、再造点数、抽卡代币
+enum MoneyType
+{
+	option allow_alias = true;
+	Start			=	0;
+	Gold			=	0;		// 金币
+	BindGold		=	1;		// 绑定金币
+	Diamond			=	2;		// 钻石
+	BindDiamond		=	3;		// 绑定钻石
+	Crystal         =   4;      // 魔晶
+	Achivement      =   5;      // 成就
+	Reputation      =   6;      // 声望
+	ImpetrateCredit =   7;      // 祈福积分
+	SpiritCredit    =   8;      // 精灵积分
+	StarSoul		=   9;		// 星魂
+	WarContribution =   10;     // 战功
+	BattleMedal		=	11;		// 战场勋章
+	Charm			=	12;		// 魅力值
+	Lottery			=	13;		// 抽卡代币
+	End				=	14;
+}
+
+message NsMoneyChange
+{
+	required int32	Type	=	1;	// 类型
+	required int32	Val		=	2;	// 当前值
+	required int32  FromType=   3;	// 货币来源
+}
+
+// 货币模块初始化
+message NsPlayerInitMoney
+{
+	repeated int32  value 	=	1;	// 货币值
+}
+
+// 货币变化
+message NcAddMoney
+{
+	required int32	Type	=	1;	// 类型
+	required int32	Val		=	2;	// 添加值
+}

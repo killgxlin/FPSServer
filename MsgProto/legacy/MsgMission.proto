@@ -1,0 +1,61 @@
+package Msg;
+
+enum MissionType
+{
+	option allow_alias	= true;
+	Trunk				= 1;	// 主线任务
+	Branch				= 2;	// 分支任务
+}
+
+enum MissionTargetType
+{
+	option allow_alias	= true;
+	TalkWith			= 1;
+}
+
+message MissionTarget
+{
+	required MissionTargetType Type = 1;
+	optional string Desc = 2;
+	optional int32 Count = 3;
+	optional int32 TargetCount = 4;
+}
+
+message Mission
+{
+	required int64 Id = 1;
+	required string MissionDesc = 2;
+	repeated MissionTarget Targets = 3;
+}
+
+// -----------------------------------------------------------------
+// 初始化时同步当前任务列表 
+message NsInitMission
+{
+	repeated Mission Missions = 1;
+}
+
+
+// -----------------------------------------------------------------
+// 提交任务
+message NcCommitMission
+{
+	required int64 MissionId = 1;
+}
+
+// -----------------------------------------------------------------
+message NsMissionAdded
+{
+	required Mission Added = 1;
+}
+
+message NsMissionUpdated
+{
+	required Mission Updated = 1;
+}
+
+message NsMissionComitted
+{
+	required int64 MissionId = 1;
+}
+

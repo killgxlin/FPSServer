@@ -1,0 +1,584 @@
+package Msg;
+
+import "protos/MsgBaseDefine.proto";
+import "protos/MsgCombat.proto";
+import "protos/MsgMove.proto";
+import "protos/MsgMoney.proto";
+import "protos/MsgBuff.proto";
+import "protos/MsgAtt.proto";
+
+    // 场景出口类型
+enum SceneExitType
+{
+	SceneExitTypeNone				=  -1;		// 无
+	Specific    					=   0;      // 指定的场景，读取属性表中的场景id和区域id
+	Previous    					=   1;      // 进入该场景之前的场景和坐标
+}
+
+// 场景区域类型
+enum ZoneType
+{
+	ZoneTypeNull = 0;		// 默认
+	Safe = 1;               // 安全区
+	PVP = 2;	            // PVP区
+	Teleport = 3;           // 传送区
+	MonsterTrigger = 4;     // 刷怪触发器
+	InstanceExit = 5;       // 副本出口
+	TeleportTarget = 6;     // 传送目标
+	Reborn = 7;             // 复活点
+	QuestTeleport = 8;      // 任务传送点
+	IOTrigger = 9;          // 地物触发器
+	PetRelive = 10;         // 宠物复活
+	QuestShare = 11;        // 任务共享
+	Born = 12;              // 地图出生点
+	Occupy = 13;            // 占领区域
+	Visit = 14;				// 探索区域 播放剧场
+	UseItem = 15;			// 使用道具区域
+	MiniCutscene = 16;		// 剧场区域
+	Card = 17;				// 卡牌配置区域
+	Survival = 18;			// 生存区域
+	TeleportInstance = 19;	// 副本传送点
+	MirrorEventTrigger = 20;// 镜像区域触发器
+}
+
+// 地物类型
+enum IOType
+{
+	Chest                               =       1;         	// 箱子
+	Collection                          =       2;         	// 采集物
+	Door								=		3;			// 门
+	Resource							=		4;			// 资源
+	Buff								=		5;			// 触碰BUFF
+	Device								=		6;			// 装置
+}
+
+// 地物事件类型
+enum IOEventType
+{
+	LootFix 							= 		1;
+	MonsterList 						= 		2;
+	MonsterObjList 						= 		3;
+	ThrowBuff 							= 		4;
+	PlayMiniCutscene 					= 		5;
+	CreateIO							=		6;
+	RevemoIO							=		7;
+	ActiveEquipCard						=		8;
+	ActiveEquipCardList					=		9;			// 大逃杀中，人物死亡产生的地物尸体，捡起后获得人物的所有card
+	Weapon								=		10;			// 获得有耐久度的武器
+	BranchQuest							=		11;			// 获得任务
+	MirrorEvent							=		12;			// 镜像事件
+	Props								=		13;			// 获得可使用的三个物品
+	Score                               =       14;         // BOSS争夺战积分包
+}
+
+// 广播属性
+enum SyncAttType
+{
+	HP                                  =       0;
+	MAX_HP                              =       1;
+	SPEED								=		2;
+	SCALE								=		3;
+	NUM									= 		4;
+}
+
+// 地物归属类型
+enum OwnerType
+{
+	NONE                                =       1;
+	PLAYER                              =       2;
+	TEAM                                =       3;
+}
+
+// 场景战斗类型
+enum SceneCombatType
+{
+	Peace    							= 		1;			// 和平场景
+	Pk       							= 		2;			// PK场景
+	Camp     							=		3;			// 阵营场景
+	Free     							= 		4;			// 自由场景
+
+}
+
+// 场景类型
+enum SceneType
+{
+	General 							= 		0;          // 普通场景
+	Instance 							= 		1;       	// 副本场景
+	TeamInstance 						= 		2;   		// 组队副本
+	Arena 								= 		3;          // 竞技场
+	ActivInstance						=		4;			// 活动副本
+	Quest                               =       5;          // 任务地图
+	Pvp									=		6;			// PVP场景
+	Singe								=		7;			// 单人
+	MirrorZone							=		8;			// 镜像区域
+	PvpQuest							=		9;			// pvp任务
+}
+
+enum IOState
+{
+	Create 								= 		0;     		// 创建
+	Birth   							= 		1;    		// 生长
+	Mature	 							= 		2;     		// 可交互
+	Destroy 							= 		3;     		// 销毁
+	Remove  							= 		4;     		// 移除
+	Refresh 							= 		5;    		// 重置
+}
+
+// 远程对象同步结构
+message PbEntitySync
+{
+	required int64			Id			=		1;			// 对象id
+	required float			PosX		=		2;			// 坐标
+	required float			PosY		=		3;
+	required float			PosZ		=		4;
+	required float			Yaw			=		5;			// 朝向
+	optional int32			TransformId	=		6;			// 变形Id
+	optional int32          DisplayId	=		7;			// DisplayId
+	repeated int32          spellID		=		8;			// 技能ID
+	optional float			defaultScale=		9;			// 默认缩放
+	optional int32			EntryId		=		10;			// EntryId
+}
+
+// 远程单元同步结构
+message PbUnitSync
+{
+	required PbEntitySync	Entity		=		1;				// 对象同步结构
+	optional PbAction		Action		=		2;				// 当前行为
+	optional uint32			State		=		3;				// 当前状态
+	repeated int64          AttValues   =       4; 				// SyncAttType里的值
+	repeated PbBuff			Buffs		=		5;				// Buff
+	optional int32			Camp		=		6[default = 0];	// 阵营
+	optional string			Name		=		7;				// 名称
+	
+	optional PbSyncAtts		SyncAtts	=		8;				// 同步属性
+}
+
+// 远程玩家同步结构，未定案
+message PbPlayerSync
+{
+	required PbUnitSync		Unit				=		1;					// 单元同步结构
+	optional int32			Clazz				=		2;					// 职业
+	optional int32			Level				=		3;					// 等级
+	optional int32			RebirthLevel		=		4;					// 转生等级
+	optional int32			TeamId				=		5[default = 0];		// 队伍ID
+	optional string			GuildName			=		6;					// 帮会名称
+	optional int32			MilitaryRank		=		7;					// 军衔等级
+	optional int32			AchievementLevel	=		8;					// 成就等级
+	optional int32			PkPoint				=		9[default = 0];	// 善恶值
+	optional int32			PkMode				=		10[default = 0];	// PK模式
+	optional int32			Sex					=		11;					// 性别
+	optional PbAvatar 		Avatar				= 		12;					// 外观
+	repeated PbButtonSpell  ButtonSpells		=		13;		// 按钮技能对应关系
+}
+
+// 远程怪物同步结构
+message PbMonsterSync
+{
+	required PbUnitSync		Unit		=		1;			// 单元同步结构
+	required int32			EntryId		=		2;			// 静态属性Id
+	required int64          MasterId    =       3;          // 怪物主人Id
+}
+
+// 远程NPC同步结构
+message PbNPCSync
+{
+	required PbEntitySync	Entity		=		1;			// 对象同步结构
+	required int32			EntryId		=		2;			// 静态属性Id
+}
+
+// 地物同步结构
+message PbIObjectSync
+{
+	required PbEntitySync   Entity      =       1;
+	required int32          EntryId     =       2;
+	required int32			ObjId		=		3;
+	required int32			State		=		4;			// 当前状态
+	repeated int64			Belongs		=		5;			// 归属Id
+	required int32          ProcessCount= 		6;			// 采集人数
+	optional int32			Camp		=		7;			// 阵营
+	optional int32			SubState	=		8;			// 机关子状态
+}
+
+// 技能效果结构
+message PbEffectObejctSync
+{
+	required PbEntitySync   Entity      =       1;
+	repeated PbBuff			Buffs		=		2;				// Buff
+}
+
+// 掉落物品结构
+message PbDropBox
+{
+	required PbUnitSync     Unit        =       1;
+	required int32          Count       =       2;
+	required int32          Quality     =       3;
+    optional int32          ItemCfgId   =       4[default = 0];
+    optional int32          MoneyType   =       5[default = 0];
+}
+
+// 掉落物品同步结构
+message PbDropBoxSync
+{
+	required PbUnitSync     Unit     	=       1;
+	required OwnerType      OwnerType   	=       2;
+	repeated int64          OwnerPlayerIds  =       3;
+}
+
+// 宠物同步结构
+message PbPetSync
+{
+	required PbUnitSync		Unit		=		1;			// 单元同步结构
+	required int32			EntryId		=		2;			// 静态属性Id
+	optional string 		NickName	=		3;			// 宠物昵称
+	optional int64			MasterId	=		4;			// 宠物主人Id
+
+}
+
+// 机器人同步结构
+message PbRobotSync
+{
+	required PbUnitSync		Unit		=		1;			// 单元同步结构
+	required int32			EntryId		=		2;			// 静态属性Id
+	required string			Name		=		3;			// 名字
+}
+
+// 镜像同步结构
+message PbGhostSync
+{
+	required PbUnitSync		Unit		=		1;							// 单元同步结构
+	optional int32          Clazz		=		2[default = -1];			// 职业
+	optional PbAvatar 		Avatar		= 		3;							// 外观
+	optional int32			DisplayId	=		4[default = -1];			// 模型
+
+}
+
+// 技能集合
+message PbSpellSet
+{
+	required 	int32		SpellSetId		=		1;		// 技能集合ID
+	repeated	int32		SpellIndexes	= 		2;		// 技能索引
+}
+
+// 技能锁定
+message PbSpellLock
+{
+	required 	int32		SpellLockId		=		1;		// 锁定技能ID
+	required	uint32		Duration		=		2;		// 锁定持续时间
+}
+
+// 本地玩家初始化 - 基本信息
+message NsPlayerInitInfo
+{
+	optional PbPlayerSync   PbPlayer			= 	1;		// 远程玩家同步信息
+	optional int64			Exp					= 	2;		// 经验
+	optional int32			FightingForce 		= 	3;		// 战斗力
+	optional int32			VipLv				= 	4;		// Vip等级
+	optional int64			FreeImpetrateTime 	=	5;		// 免费祈福时间 时间差
+	repeated PbSpellSet		SpellSets			=	6;		// 技能集合
+	repeated PbSpellLock	SpellLocks			=	7;		// 技能锁定掩码
+	optional int32			DefensePoints		=	8;		// 防御点数
+	optional int32          EnergyPoints		=	9;		// 能量点数
+	optional int32          VigourPoints		=	10;		// 体力
+	repeated PbButtonSpell  ButtonSpells		=	11;		// 按钮技能对应关系
+	optional int32          CurGuildContribution =  12;     // 当前公会贡献度
+	optional int32          GuildContribution   =   13;     // 累计公会贡献度
+	optional PbShortCutSet       ShortCutSet = 14;           // 快捷栏配置
+}
+
+// 加入一个新的可见对象
+message NsSyncAddEntity
+{
+	required int64			EntityId		=	1;		// 对象id
+}
+
+// 加入多个新的可见对象
+message NsSyncAddEntities
+{
+	repeated int64			Entities		=	1;		// 对象id列表
+}
+
+// 场景区域类型
+enum RemoveReason
+{
+	ReasonNone	  = 0;		 // 默认
+	Death		  = 1;       // 安全区
+}
+
+// 移除一个不可见对象
+message NsSyncRemoveEntity
+{
+	required int64			EntityId		=	1;		// 对象id
+	required RemoveReason 	RemoveReason	=	2;		// 移除原因
+}
+
+// 移除多个不可见对象
+message NsSyncRemoveEntities
+{
+	repeated int64			Entities		=	1;		// 对象id列表
+}
+
+// 请求远程对象的同步信息
+message NcRequireSyncInfo
+{
+	repeated int64			Entities		=	1;		// 对象Id列表
+}
+
+// 同步远程玩家信息
+message NsSyncPlayer
+{
+	required PbPlayerSync	Sync			=	1;		// 远程玩家结构
+}
+
+// 同步远程怪物信息
+message NsSyncMonster
+{
+	required PbMonsterSync	Sync			=	1;		// 远程怪物结构
+}
+
+// 同步可交互对象信息
+message NsSyncInteractiveObject
+{
+	required PbIObjectSync       Sync       =   1;     //  地物结构
+}
+
+// 同步掉落对象信息
+message NsSyncDropBox
+{
+	required PbDropBoxSync       Sync       =   1;    //同步掉落对象信息
+}
+
+// 同步远程NPC信息
+message NsSyncNPC
+{
+	required PbNPCSync		Sync			=	1;	  //远程NPC结构
+}
+
+// 同步技能对象信息
+message NsSyncEffectObject
+{
+	required PbEffectObejctSync  Sync       =   1;    //同步技能对象信息
+}
+
+// 同步宠物对象信息
+message NsSyncPet
+{
+	required PbPetSync  		Sync       =   1;    //同步宠物对象信息
+}
+
+// 同步机器人对象信息
+message NsSyncRobot
+{
+	required PbRobotSync       Sync			=	1;	//同步容器对象信息
+}
+
+// 同步机器人对象信息
+message NsSyncGhost
+{
+	required PbGhostSync       Sync			=	1;	//同步容器对象信息
+}
+
+// 玩家加载场景完毕
+message NcEnterSceneOK
+{
+	required int32			SceneId			=	1;		// 场景Id
+}
+
+// 服务器通知玩家进入场景
+message NsEnterSceneOK
+{
+	required int32			SceneId			=	1;		// 场景Id
+	required float			PosX			=	2;		// 坐标
+	required float			PosY			=	3;
+	required float			PosZ			=	4;
+	required float			Yaw				=	5;		// 朝向
+	required	float				Time		=		6;			// 本世界时间
+	required	float				TotleTime		=		7;			// 本世界总时间
+	required	int32		Stage			=	8;	//选择的阶段
+}
+
+
+// 领取掉落的物品
+message NcReceiveDropBoxes
+{
+	repeated int64          Entities        =   1;      // 物品Id
+}
+
+message NsReceiveDropBoxes
+{
+	repeated int64          Entities        =   1;      // 物品Id
+}
+
+// 与可交互物交互
+message NcInteractIO
+{
+	required int64          EntityId        =   1;      // 对象Id
+	required float			PosX			=	2;		// 坐标
+	required float			PosY			=	3;
+	required float			PosZ			=	4;
+	required float			Yaw				=	5;		// 朝向
+}
+
+// 开始交互地物
+message NsBeginInteractIO
+{
+	required int64			UnitId			= 	1;		// 交互者的ID
+	required PbAction       Action          =   2;      // 交互动作
+}
+
+// 结束交互地物
+message NsEndInteractIO
+{
+	required int64			UnitId			= 	1;		// 交互者的ID
+    required int64          TargetId        =   2;     	// 被交互地物的ID
+	required int32          Result          =   3;    	// 结果
+}
+
+// 同步属性
+message NsSyncUnitAtt
+{
+	repeated SyncAttType    Types       =       1;
+	repeated int64	        Values      =       2;
+	required int64          UnitId      =       3;
+	optional PbSyncAtts 	SyncAtts 	= 		4;
+}
+
+// 掉落
+message NsDropBoxes
+{
+	required int64			FromEntityId	=		1;		// 掉落者ID
+	required OwnerType      OwnerType   	=       2;		// 拥有者类型
+	repeated int64          OwnerPlayerIds  =       3;		// 拥有者ID
+	repeated PbDropBox		DropBoxes		= 		4;		// 掉落物品
+}
+
+// 掉落改变
+message NsDropBoxChanged
+{
+	required int64          Id          =       1;
+	required OwnerType      ownerType   =       2;
+}
+
+// 安全区发生变化时 通知客户端
+message NsChangeInSafeZone
+{
+	required bool 	InSafeZone	=		1;			// 是否在安全区   true：进入安全区    false：离开安全区
+}
+
+// 地物状态改变时发送
+message NsChangeIOState
+{
+	required int64	EntityId    =       1;			// 地物ID
+	optional int32	State		=		2;			// 当前状态
+	optional int32  ProcessCount=		3;			// 采集人数
+}
+
+// 地物状态改变时发送
+message NsChangeIOSubState
+{
+	required int64	EntityId    =       1;			// 地物ID
+	optional int32	SubState	=		2;			// 当前地物子状态
+}
+
+// 地物归属增加
+message NsAddInteractIOBelongs
+{
+	required int64 EntityId		=		1;			// 增加归属Id
+}
+
+message NsRemoveInteractIOBelongs
+{
+	required int64 EntityId		=		1;			// 移除归属Id
+}
+
+message NcLeaveQuestScene
+{
+
+}
+
+//进入传送区域
+message NsEnterTeleportZone
+{
+	required int32 destSceneId   = 1;  //目标场景ID
+	repeated int32 sceneArray    = 2;  //可传送场景
+}
+
+//进入任务传送区域
+message NsEnterQuestTeleportZone
+{
+	required int32 destSceneId = 1;    //目标场景ID
+}
+
+//玩家是否在传送区域内
+message NcPlayerInTeleportZone
+{
+
+}
+
+//开始占据区域
+message NsStartOccupyZone
+{
+	required int32 ZoneId	=	1;
+}
+
+//结束占据区域
+message NcStopOccupyZone
+{
+	required int32 ZoneId	=	1;
+}
+
+//结束占据区域
+message NsStopOccupyZone
+{
+	required int32 ZoneId	=	1;
+}
+
+// 广播玩家读取场景OK
+message NsBPlayerLoadingOK
+{
+	repeated int64 PlayerIds	 =	 1;		// 玩家ID
+	repeated bool  IsLoadingOks  =	 2;		// 玩家加载完成标示
+	repeated bool  IsLogins		 =	 3;		// 玩家是否在线
+}
+
+//通知玩家上线
+message NsNoticePlayerLogin
+{
+	required int64 PlayerId =    1;
+}
+
+//通知玩家下线
+message NsNoticePlayerLogout
+{
+	required int64 PlayerId =    1;
+}
+
+//点击丢弃积分按钮
+message NcDropScore
+{
+}
+
+// 广播类型
+enum BroadcastMessageType
+{
+	Simple						=	0;	// 最普通的类型弹出消息
+}
+
+message	NsBroadcastMessage
+{
+	optional string					Msg		=	1;	// 消息文字
+	optional int32					Type	=	2;	// 广播类型
+	optional int32					Par 	=	3;	// 参数
+}
+
+message NcOnOffNavMesh
+{
+	optional bool					OpenNav	=	1;	// 是否打开NAV
+}
+
+// 服务器下发的快捷键设置
+message PbShortCutSet
+{
+    repeated int32              KeyCodes                = 1;    // 快捷键的键盘按键设置
+    repeated int64          	ItemIds                 = 2;    // 物品ID设置（装备类型的快捷设置）
+    repeated string             ItemNames               = 3;    // 物品名称设置（可使用物品类型的快捷设置）
+}

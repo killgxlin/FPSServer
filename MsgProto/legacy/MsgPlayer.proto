@@ -1,0 +1,390 @@
+package Msg;
+import "protos/MsgBaseDefine.proto";
+import "protos/MsgItem.proto";
+
+enum PkMode
+{
+	Peace		=		1;			// 和平
+	Aerna		=		2;			// 竞技
+	Carnage		=		3;			// 屠杀
+}
+
+// 复活类型
+enum ResurrectType
+{
+	Original	=		1;			// 原地复活
+	SafeArea	=		2;			// 安全区复活
+	Instance    =       3;          // 副本内复活
+}
+
+enum PlayerState
+{
+	Online     =   0;  //正常状态
+	Death      =   1;  //死亡状态
+	DropLine   =   2;  //掉线状态
+	OffLine    =   3;  //离线状态
+	InTeam	   =   4;  //组队中
+	Match      =   5;  //匹配中
+	MatchFight =   6;  //匹配战斗中 
+}
+
+//玩家地理位置
+message PbGeographPos
+{
+	required    int32       City             = 1;       // 所在城市
+	required    float       X                = 2;       // X坐标
+	required    float       Y                = 3;       // Y坐标  
+}
+
+message PbPlayerInfo
+{
+	required	int64			Id 		 		 	= 1; 		// 玩家ID
+	optional 	string 			Name	 		 	= 2;		// 玩家名字
+	optional 	int32 			Level	 		 	= 3;		// 玩家等级
+	optional 	int32 			RebirthLevel		 = 4;		// 玩家转生等级
+	optional 	int32 			Clazz	 		 	= 5;		// 玩家职业
+	optional	PbAvatar		Avatar			 	= 6;		// 外观
+	optional  	int32       	SceneId			 	= 7;		// 玩家所在地图
+	optional 	int32			FightingForce 	 	= 8;		// 战斗力
+	optional 	int32      		RespectTimes	 	= 9;		// 崇拜次数
+	optional 	string			GuildName		 	= 10;		// 战盟名称
+	optional	int32			VipLv			 	= 11;		// Vip等级
+	optional	int32			TeamNumber		 	= 12;		// 队伍人数
+	optional 	int32			MilitaryRank	 	= 13;		// 军衔等级
+	optional 	int32			AchievementLevel 	= 14;		// 成就等级
+	optional 	int32			Sex				 	= 15;		// 性别
+	optional 	string      	ActivePetName    	= 16;		// 宠物名称
+	optional    bool        	IsAlive          	= 17;      	// 是否活着
+	optional	int64			LastLoginTime	 	= 18;		// 上次下线时间
+	optional	PlayerState 	PlayerState		 	= 19;		// 玩家状态
+	optional	int64			Birthday		 	= 20;		// 生日
+	optional	PbGeographPos 	GeographPos	 		= 21;		// 位置
+	repeated	int32			Labels				= 22;		// 标签
+	optional	string			Signature			= 23;		// 个性签名
+	optional	int32			Liked				= 24;		// 点赞数量
+	optional 	int64 			RecentActionTick	= 25; 		// 最近交互时间
+	optional 	int32 			RecentActionType	= 26; 		// 最近的交互行为类型
+	optional 	int32 			RecentActionVal		= 27; 		// 最近的交互行为值
+	optional	int64			AddTime				= 28;		// 申请好友时间
+	optional 	string 			AddSayHi			= 29;		// 申请时的废话	
+	optional	bool			IsSameGuild			= 30;		// 是否同工会
+	optional	uint32			Intimacy			= 31;		// 亲密度值
+}
+
+// 获取玩家基本信息
+message NcGetPlayerInfo
+{
+	required int64	PlayerId		=	1;	// 目标玩家ID
+}
+
+// 获取玩家基本信息
+message NsGetPlayerInfo
+{
+	required PbPlayerInfo PlayerInfo     =   1;  // 玩家信息
+}
+
+// 获取玩家详细信息
+message NcGetPlayerDetailedInfo
+{
+	required int64	PlayerId		=	1;	// 目标玩家ID
+}
+
+// 获取玩家详细信息
+message NsGetPlayerDetailedInfo
+{
+	required 	PbPlayerInfo	PlayerInfo	=	1;		// 玩家信息
+	repeated	PbItem		  	EquipList	=	2;		// 目标装备
+	repeated 	int32			Atts		=	3;		// 所有属性值
+}
+
+//模糊查询获取玩家信息
+message NcFindPlayerByRegex
+{
+	required string        Name           =  1;
+}
+
+//模糊查询获取玩家信息
+message NsFindPlayerByRegex
+{
+	repeated PbPlayerInfo  PlayerInfos    =  1;
+}
+
+// 设置玩家生日
+message NcSetPlayerBirthday
+{
+	required int64	Birthday		=	1;	// 生日
+}
+
+message NsSetPlayerBirthday
+{
+	required bool	Result			=	1;	// 操作结果
+	required int64	Birthday		=	2;	// 生日
+}
+
+// 设置玩家标签
+message NcSetPlayerLabels
+{
+	repeated int32	Labels			= 1;	// 标签
+}
+
+message NsSetPlayerLabels
+{
+	required bool	Result			= 1;	// 操作结果
+	repeated int32	Labels			= 2;	// 标签
+}
+
+// 设置个性签名
+message NcSetPlayerSignature
+{
+	required string	Signature		= 1;	// 个性签名
+}
+
+message NsSetPlayerSignature
+{
+	required bool	Result			= 1;	// 操作结果
+	required string	Signature		= 2;	// 个性签名
+}
+
+// 设置玩家坐标
+message NcSetPlayerGeographPos
+{
+	required	PbGeographPos 	GeographPos	 		= 1;		// 位置
+}
+
+message NsSetPlayerGeographPos
+{
+	required 	bool			Result				= 1;		// 操作结果
+	required	PbGeographPos 	GeographPos	 		= 2;		// 位置
+}
+
+// 点赞玩家
+message NcLikedPlayer
+{
+	required	int64	PlayerId	=	1;
+}
+
+message NsLikedPlayer
+{
+	required 	bool	Result		= 1;		// 操作结果	
+	required	int32	Liked		= 2;		// 被赞次数
+}
+
+// 经验变化
+message NsPlayerAddExp
+{
+	required int64	AddExp			= 	1;	//  增加的经验
+	required int64	CurExp			=	2;	//	当前的经验
+}
+
+// 等级变化
+message NsPlayerLevelUp
+{
+	required int64	PlayerId		=	1;
+	required int32	CurLevel		=	2;	// 当前等级
+}
+
+// 转生
+message NcPlayerRebirth
+{
+	
+}
+
+// 转生结果
+message NsPlayerRebirth
+{
+	required int64	PlayerId		=	1;
+	required int32 	RebirthLevel	= 	2;	//	转生等级
+	required int32	Level			=	3;	//  当前等级
+}
+
+// 战斗力变化
+message NsPlayerFightingForceChange
+{
+	required int32	FightingForce	=	1;	//	当前战斗力
+}
+
+// VIP等级变换
+message NsPlayerVipLevelUp
+{
+	required int32	CurLevel		=	1;	// 当前等级
+}
+
+// 复活
+message NcPlayerResurrect
+{
+	required	ResurrectType	Type	=	1;		// 复活类型
+}
+
+message NsPlayerResurrect
+{
+	required	bool			Result	=	1;		// 复活结果
+}
+
+// 等待复活
+message NsWaitResurrect
+{
+	required	int32 			RemainTime				= 1;	// 剩余时间（秒）
+	required	int64			KillerId				= 2;	// 击杀者ID
+}
+
+// 死亡
+message NsPlayerDeal
+{
+	optional	string			KillerName				= 1;	// 击杀者姓名
+	optional	int32			FreeResurrectCount	  	= 2;	// 免费复活次数
+	optional	int32			MaxFreeResurrectCount 	= 3;	// 最大免费复活次数
+	optional	int32			ResurrectItemCount		= 4;	// 复活道具数量
+}
+
+// 切换场景
+message NcPlayerChangeScene
+{
+	required	int32 			DestSceneId				= 1;	// 场景ID
+	required	int32			DestZoneId				= 2;	// 区域ID	
+}
+
+// PK模式设置
+message NcSetPkMode
+{
+	required	int32 			PkMode					= 1;	// PK模式
+}
+
+message NsSetPkMode
+{
+	required	bool 			Result					= 1;	// 设置结果
+	required	int32 			CurPkMode				= 2;	// 当前的PK模式
+	optional	int64			SurplusTime				= 3[default = 0];	// 剩余时间
+	
+}
+
+// 广播善恶值
+message NsPkPointSync
+{
+	required	int64 			PlayerId				= 1;	// 玩家ID
+	required	int32 			PkPoint					= 2;	// 当前善恶值
+}
+
+// 广播PK模式
+message NsPkModeSync
+{
+	required	int64 			PlayerId				= 1;	// 玩家ID
+	required	int32 			PkMode					= 2;	// 当前PK模式
+}
+
+message NcSetCamp
+{
+	required	int32			Camp					= 1;	// 阵营
+}
+
+// 广播阵营
+message NsCampSync
+{
+	required	int64 			UnitId					= 1;	// 对象ID
+	required	int32			Camp					= 2;	// 玩家阵营
+}
+
+// 血池信息
+message NsBloodPoolInfo
+{
+	required    int64           CurBloodPoolVal         = 1;   // 血池当前血量
+}
+
+// 设置技能索引
+message NcSetPlayerSpellIndex
+{
+	required 	int32			SpellSetId				= 1;	// 技能集合ID
+	required	int32			ButtonId				= 2;	// 按钮ID
+	required	int32			SpellIndex				= 3;	// 技能索引
+}
+message NsSetPlayerSpellIndex
+{
+	required 	int32			SpellSetId				= 1;	// 技能集合ID
+	required	int32			ButtonId				= 2;	// 按钮ID
+	required	int32			SpellIndex				= 3;	// 技能索引
+}
+
+// 技能锁定
+message NsSpellLockChange
+{
+	required 	int32			LockTypeId				= 1;	// 锁定类型ID
+	optional	bool			Locked					= 2;	// 是否锁定
+	optional	uint32			Duration				= 3;	// 锁定时间
+}
+
+// 以掩码方式的技能锁定
+message NsSpellLocksChange
+{
+	required 	uint32			Locks					= 1;	// 锁定类型掩码
+	optional	bool			Locked					= 2;	// 是否锁定
+	optional	uint32			Duration				= 3;	// 锁定时间
+}
+
+// 体力改变
+message NsVigourPointsChange
+{
+	required	int32			VigourPoints			= 1;	// 体力
+}
+
+// 播放剧场
+message NsPlayMiniCutscene
+{
+	required 	string 		    Name					= 1;	// 播放剧场
+}
+
+// 播放剧场完毕
+message NcPlayMiniCutsceneEnd
+{	
+	required	string          Name					= 1;	// 剧场播放完成
+}
+
+// 改变角色外观
+message NsChangeAvatar
+{
+    required int64              PlayerId                = 1;    // 角色Id
+	required AvatarPartType     Type                    = 2;    // 外观类型
+    required int32          	Value                   = 3;    // 外观值
+}
+
+// ping值
+message NcPing
+{
+}
+
+message NsPing
+{
+}
+
+// 客户端变更的快捷键键盘按钮设置
+message NcShortCutKeySet
+{
+    repeated int32              Idx                     = 1;    // 索引
+    repeated int32          	KeyCode                 = 2;    // 快捷键的键盘按键
+}
+
+// 客户端变更的快捷键键盘按钮设置
+message NcShortCutSet
+{
+    required int32              Idx                     = 1;    // 索引
+    required int64          	ItemId                  = 2;    // 被放入快捷的物品ID
+    required string          	Name                    = 3;    // 被放入快捷的物品名称
+}
+
+// 编辑模式
+message NcEditMode
+{
+	required bool				IsOpen					= 1;	//是否是打开编辑模式的消息
+}
+
+message NsEditMode
+{
+	required bool				IsOpen					= 1;	//是否是打开编辑模式的消息
+}
+
+message NsEditUI
+{
+	required string				varName					= 1;	//UI名称
+	required string				type					= 2;	//UI模板
+	required string				scriptType				= 3;	//脚本类
+	required string				displayName				= 4;	//方法名称
+	required bytes				paramValues				= 5;	//参数
+}

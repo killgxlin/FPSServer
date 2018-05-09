@@ -1,0 +1,76 @@
+package Msg;
+
+message PbWeapon
+{
+	required int32 CfgID		=	1;	// 对应配置表中的物品ID
+	required int32 Endurance	=	2;	// 武器的耐久度
+}
+// 添加武器
+message NsAddWeapon
+{
+	required PbWeapon Weapon	= 	1;	// 武器
+}
+// 扔掉武器
+message NcRemoveWeapon
+{
+	required int32 Index		=	1;	// 对应武器的顺序号
+}
+message NsRemoveWeapon
+{
+	required int32 RemoveIndex		=	1;	// 需要从玩家身上删除的武器ID
+	required int32 IndexNow			=	2;	// 玩家要装备上的武器ID
+}
+// 	更新武器耐久
+message NsUpdateEndurance
+{
+	required int32 Index		=	1;	// 对应武器的顺序号
+	required int32 Endurance	=	2;	// 武器的耐久度
+}
+//	切换武器
+message NsChangeWeapon
+{
+	required int32 Index		=	1;	// 对应武器的顺序号
+}
+message NcChangeWeapon
+{
+	required int32 Index		=	1;	// 对应武器的顺序号
+}
+//初始化
+message NsPlayerInitWeapon
+{
+	repeated  PbWeapon WeaponList	=  1;  // 装备列表
+	required  int32 Index			=  2;  // 对应武器的顺序号
+}
+//武器移动位置（插入）
+message NcChangeWeaponIndex
+{
+	required  int32 Index			=  1;  // 对应武器的顺序号
+	required  int32 NewIndex		=  2;  // 武器改变后的顺序号
+}
+message NsChangeWeaponIndex
+{
+	required  int32 Index			=  1;  // 对应武器的顺序号
+	required  int32 NewIndex		=  2;  // 武器改变后的顺序号
+}
+
+// 穿戴装备
+message NcWearEquip
+{
+        required int64 Id            =      1;                                                 //需要穿戴的装备
+}
+
+message NsWearEquip
+{
+        required int64 Id             =      1;                                                 //被穿上的装备
+}
+
+// 脱下装备
+message NcTakeOffEquip
+{
+        required int32 SlotId         =      1;                                                 //需要除下的装备
+}
+
+message NsTakeOffEquip
+{
+        required int64 Id             =      1;                                                 //被除下的装备
+}

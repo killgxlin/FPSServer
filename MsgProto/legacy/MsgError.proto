@@ -1,0 +1,364 @@
+package Msg;
+
+// 错误码枚举
+enum MsgError
+{
+	Invalid				=		-1;			// 非法
+	Success				=		0;			// 成功
+	
+	//通用错误[1-100]
+	ParamError 					= 1;				// 参数错误
+	LoadCfgError 				= 2;				// 读取静态属性错误
+	NotFindTheUser				= 3;				// 未找到该用户，请检查输入的名字是否正确！
+	ConditionLimit				= 4;				// 条件限制
+	ClazzLimit					= 5;				// 职业限制
+	PlayerLevelLimit 			= 6;				// 玩家等级限制
+	PlayerRebirthLevelLimit 	= 7;				// 玩家转生等级限制
+	AttLimit					= 8;				// 一级属性限制
+	RelationCountLimit			= 9;				// 所加关系已达上限
+	MySelfLimit					= 10;				// 此操作无法对自己使用
+	UsedCountLimit				= 11;				// 物品达到使用次数上限
+	TargetIsOffLine				= 12;				// 目标已经不在线
+	VipLevelLimit				= 13;				// Vip等级限制
+	GuildLevelLimit				= 14;				// Guild等级限制
+	QuestLimit					= 15;				// 未达到任务要求
+	FrontInstanceLimit			= 16;				// 前置副本未解锁
+	EnterInstanceLimit			= 17;				// 进入次数限制
+	ForbidLogin                 = 18;               // 禁止登录
+	RelationIsExists			= 19;				// 关系已经存在			
+	OperationgLimit				= 20;				// 此操作被限制
+	ItemIsNull					= 21;				// 物品已经不存在
+	TeamIsNull					= 22;				// 队伍已经不存在
+	NpcIsNull					= 23;				// npc已经不存在
+	FunctionNotOpen				= 24;				// 功能尚未开启
+	QuestIsNotComplete			= 25;				// 任务没有完成
+	DailyQuestCommitLimit		= 26;				// 今日完成的任务达到上限
+	TimeLimit					= 27;				// 时间限制
+	PvpCombatLimit				= 28;				// 战斗状态，无法传送
+	IsNotCloseNpc				= 29;				// 没有在指定的NPC附近
+	BuyBuffLimit				= 30;				// 购买的BUFF达到堆叠上限，无法购买
+	ServerPlayerCountFull		= 31;				// 服务器人数已满
+	
+	EnterWorldError				= 33;				// 进入游戏异常，请重新登录
+	RecvMsgTimeOut				= 34;				// 由于长时间没有操作，请重新登录
+	PingTimeOut					= 35;				// 客户端网络消息异常，请重新登录
+	
+	SelfHpLimit					= 36;				// 自身血量限制
+	TargetHpLimit				= 37;				// 目标血量限制
+	
+	SaveOffLineChat				= 38;				// 对方暂时不在线，您的消息我们暂时保存，等他上线的时候我们会通知给他
+	ReceiveOffLineChat			= 39;				// 收到离线消息，请注意查收
+	
+	//背包物品相关[100-200]
+	BagFull 					= 100;				// 背包已满
+	ItemIsNotEnough 			= 101;				// 使用道具不足
+	ItemIsEmpty 				= 102;				// 服务器没有找到物品
+	ItemTypeLimit 				= 103;				// 该物品无法进行此操作	
+	MaxBagNum 					= 104;				// 格子数量已经最大值
+	NotHasEnoughCost 			= 105;				// 开销不足
+	MaxLimitEquipForge			= 106;				// 装备的强化等级已经达到最大值
+	NotHasEnoughSpecialCost		= 107;				// 特殊消耗不足
+	MaxLimitEquipAppend			= 108;				// 装备的追加等级已经达到最大值
+	LimitEquipUpgrade			= 109;				// 装备进阶要求所有装备类型必须一致
+	MaxLimitEquipUpgrade		= 110;				// 该装备达到进阶最大值，无法继续进阶
+	BuyItemStackLimit			= 111;				// 购买物品时，最大购买数量不能超过物品堆叠数量
+	CreateLootWeightError		= 112;				// 根据掉落权重生成过程错误
+	RecoveryTypeError			= 113;				// 回收类型错误
+	InheritLimit				= 114;				// 传承限制 目标装备的传承属性必须小于原装备
+	ItemEffectIsUpperLimit		= 115;				// 物品使用效果已经达到上限
+	ImpetrateBagFull			= 116;				// 祈福背包空格不足10个，无法进行十连抽
+	MoneyParamError				= 117;				// 输入的钱币参数错误
+	PetIsEmpty					= 118;				// 服务器没有找到宠物
+	ProcessNeedItemIsEmpty		= 119;				// 采集需要的道具不足
+	PunchNotEmpty               = 120;              // 孔位已解锁
+	AmuletComposeLvLimit        = 121;              // 护符合成等级限制
+	UpgradeAfterEquip           = 122;              // 装备后才能进阶
+	EquipLevelCanNotExceedPlayer = 123;              // 装备等级不能超过人物等级
+	
+	//养成玩法相关[200-300]
+	AlreadyStartMeditate		= 201;				// 已经处于冥想状态
+	AlreadyStopMeditate			= 202;				// 已经停止冥想状态
+	
+	//队伍相关[301-350]
+	AlreadyHaveTeam				= 301;				// 您已经有队伍了
+	TeamIsFull					= 302;				// 队伍人数已经达到上限
+	TeamInviteIsFull			= 303;				// 队伍邀请人数达到上限
+	TeamApplyIsFull 			= 304;				// 队伍申请人数达到上限
+	TargetHasTeam				= 305;				// 目标已经拥有队伍
+	TargetNotHasTeam			= 306;				// 目标队伍已经不存在
+	MySelfHasTeam				= 307;				// 自己已经拥有队伍
+	MySelfNotHasTeam			= 308;				// 自己没有拥有队伍
+	MySelfIsNotLeader			= 309;				// 不是队长，无法进行此操作
+	TargetIsNotLeader			= 310;				// 目标不是队长
+	TargetPreventTeam			= 311;				// 目标禁止组队邀请
+	TeamMemberIsNotAround		= 312;				// 对不起，您的队友不在附近
+	TeamFightScoreLimit         = 313;              // 你的战力不满足队伍条件
+	CanNotKickTeamMember        = 314;              // 你没有权限踢出队员
+	CanNotChangeTeamFightLimit  = 315;              // 你没有权限修改队伍战斗力限制
+	NotInSameScene              = 316;              // 没有在同一场景内
+	MemberCanNotEnterInstance   = 317;              // 队伍成员没有解锁副本
+	NoMatchedTeam               = 318;              // 没有可匹配的队伍
+	EnterInstanceMemberLimit    = 319;              // 人数不足，不能进入副本
+	EnterInstanceMemberOfflineLimit = 320;          // 队伍中有离线玩家，不能开始
+	TeamConditionLimit          = 321;              // 不满足队伍条件
+
+	//堂口相关[351-450]
+	AlreadyInGuild          	= 351;              // 该玩家已经加入其他堂口
+	InvalidGuildName            = 352;              // 堂口名称非法
+	CreateGuildFailed           = 353;              // 创建堂口数据库操作失败
+	NotInGuild                  = 354;              // 无堂口
+	InvalidGuildId              = 355;              // 无效的堂口Id
+	LeaveGuildNotPermited       = 356;              // 无权离开堂口，比如堂主无法离开
+	InvalidGuildAnnouncement    = 357;              // 公告字符串非法
+	GuildNoPermission           = 358;              // 无权限对堂口做操作
+	InvalidGuildPosition        = 359;              // 目标职位已有人
+	RecruitError                = 360;              // 批准加入堂口失败
+	InvalidPlayerName           = 361;              // 玩家名字不对
+	PlayerNotOnline             = 362;              // 玩家不在线
+	GuildArchitectureMaxLevel   = 363;              // 旗帜已经满级
+	OtherGuildArchitectureLevel = 364;              // 其他旗帜等级不足
+    NotEnoughGoldToUpgradeArch  = 365;              // 升级金币不足
+    NotEnoughItemToUpgradeArch  = 366;              // 升级物品不足
+    NotEnoughGoldToCreateGuild  = 367;              // 创建堂口金币不足
+	TargetAlreadyInOtherGuild	= 368;				// 该用户已加入了其他堂口
+	TargetAlreadyInGuild		= 369;				// 该用户已加入了堂口
+	GuildMaxMemberLimit			= 370;				// 堂口人员已满，请先清理堂口位置
+	GuildViceMasterCountLimit	= 371;				// 副堂主人数已满，请重新任命职位
+	NoMoreGuildMember			= 372;				// 没有更多的成员
+	NoMoreGuildApplyMember		= 373;				// 没有更多的申请成员
+	NoMoreGuild					= 374;				// 没有更多的堂口
+	JustLeaveGuild				= 375;				// 该玩家刚刚推出堂口，请稍后重试。
+	HasInApplyList              = 376;              // 已经在公会申请列表中
+	DonateRequestNoExist        = 377;              // 捐赠请求不存在
+	DonateRequestComplete       = 378;              // 捐赠请求完成
+	DonateRequestTimeOut        = 379;              // 捐赠请求超时
+	DonateRequestCD             = 380;              // 很抱歉，当前处于请求冷却时间中
+	GuildContributionLimit      = 381;              // 公会贡献度不足
+	NoEnoughGuildExp            = 382;              // 公会经验不足
+	MaxGuildLevel               = 383;              // 公会已达最大等级
+	CanNotAddInGuildMerge       = 384;              // 该公会正处于合并状态，暂不能加入
+	CanNotApplyInGuildMerge     = 385;              // 该公会正处于合并状态，暂不能申请
+	CanNotInviteInGuildMerge    = 386;              // 公会正处于合并状态，暂不能邀请
+	CanNotAgreeInGuildMerge     = 387;              // 公会正处于合并状态，暂不能同意申请
+	NotExistMergeRequest        = 388;              // 合并请求不存在
+	MasterCanNotInpeach         = 389;              // 不能对自己发起弹劾哦
+    InpeachHasExist             = 390;              // 弹劾已经存在
+	InpeachNoExist              = 391;              // 弹劾不存在
+	CanNotAskInpeach            = 392;              // 入会不足7日，不能发起弹劾
+	NoEnoughInpeachPlayer       = 393;              // 7日的登陆人数不满足要求，不能发起弹劾
+	InpeachNoMaster             = 394;              // 弹劾对象不是会长
+	NoPermissionOnInpeach       = 395;              // 弹劾期间没有权限进行该操作
+	GuildMergeMembersLimit      = 396;              // 双方公会人数总和超出接纳方的上限，无法合会
+	InpeachStop                 = 397;              // 弹劾发起人离开公会，弹劾终止
+	CanNotAnswerInpeach         = 398;              // 入会不足1日，不能响应弹劾
+	MemberLeaveGuild            = 399;              // 成员已不在公会中
+	MemberNotEnoughFour         = 400;              // 公会人数达到四人才能发起弹劾
+	GuildQuestHasExist          = 401;              // 已领取过公会任务
+	GuildQuestHasOwner          = 402;              // 该任务已被领取
+	
+	//交易错误[451-500]
+	SelfInTrading					= 451;				// 自己处于交易状态
+	TargetInTrading					= 452;				// 目标处于交易状态
+	TargetPreventTrading			= 453;				// 目标禁止交易
+	TargetNotAgreeTrading			= 454;				// 目标没有同意交易行为
+	CreateTradingError				= 455;				// 创建交易失败
+	SelfNotInTrading				= 456;				// 没有处于交易状态
+	SelfHasNotEnoughTradingItem		= 457;				// 本人没有足够的交易物品,交易失败
+	TargetHasNotEnoughTradingItem	= 458;				// 对方没有足够的交易物品,交易失败
+	SelfHasNotEnoughFreeSlot		= 459;				// 本人没有足够的空闲槽位,交易失败
+	TargetHasNotEnoughFreeSlot		= 460;				// 对方没有足够的空闲槽位,交易失败
+	TardingCountLimit				= 461;				// 交易物品的数量超过上限
+	
+	//崇拜错误[501-510]
+	EachPersonCanOnlyRespectOnce	= 501;				// 同一个人只能被你一天崇拜一次
+
+	//拍卖行错误
+    //聊天错误
+    ForbitChat                      = 511;              // 禁言
+    InBlackList                     = 512;              // 黑名单中
+	SelfInBlackList					= 513;				// 您已经被对方拉黑,对方无法收到你的消息
+	TargetPreventChat				= 514;				// 目标禁止私聊
+	
+	//福利[601-610]
+	NotAchieveCondition				= 601;				// 没有达到领取条件
+	RewardHasReceived				= 602;				// 奖励已经领取
+	
+	//竞技场[611-620]
+	OneDayCanReceiveOnce			= 611;				// 24小时只可以领取一次	
+	NotFindPlayerRank				= 612;				// 没有找到该玩家的有效排名
+	BanChallengeSelf				= 613;				// 禁止挑战自己
+	SelfAlreadyInArena				= 614;				// 自己已经在竞技场当中
+	TargetAlreadyInArena			= 615;				// 目标已经在竞技场当中
+	ArenaIsCoolDown					= 616;				// 您的竞技场处于冷却当中，请稍后...
+	ChallengeTimesLimit				= 617;				// 您的挑战次数已达上限
+	ArenaConfirmError				= 618;				// 匹配确认错误
+	MatchTypeError					= 619;				// 匹配类型错误
+	MatchIsNotOpen					= 620;				// 竞技场尚未开启
+	
+	//拍卖行[621-630]
+	BindItemLimit					= 621;				// 绑定物品无法做此操作
+	CanotBuyOwnGoods				= 622;				// 不能购买自己拍卖的物品
+	
+	//聊天[631-640]
+	NotHaveTeam						= 631;				// 您当前没有队伍
+	ChatTooFast						= 632;				// 你说话太快了,请稍等...
+	ChatContentTooLong				= 633;				// 您所发送内容太长。
+	
+	//副本[701-800]
+	EnterTimesLimit					= 701;				// 亲，你今天进入副本的次数太多了，充个VIP试试，或者只能等到明天了...
+	AwardHasReceived				= 702;				// 奖励已经领取
+	SweepNotReachMax			    = 703;				// 扫荡未达到最大值
+	ActivityNotOpen					= 704;				// 活动尚未开启,请耐心等待...精彩活动马上开始哦...
+	NotAllMemberHasReady			= 705;				// 不是所有的队员都准备好了,亲，要慢慢等待...
+	TowerSweepCountLimit			= 706;				// 今日的扫荡次数达到上限
+	TowerSweepFloorLimit			= 707;				// 今日的扫荡层数达到上限
+	InReadyList						= 708;				// 您已经在等待队列中... 请耐心等待..
+	WaittingTimesIsTooLong			= 709;				// 您的队员长时间未确认，无法进入副本！
+	InstanceFailure					= 710;				// 时间过长已失效...
+	UnableInviteToTeam				= 711;				// 您的队友正在副本中，请稍后尝试
+	NoTeamCanNotEnterDaodou			= 712;				// 对不起，您还无队友不可进行摸金
+	InstanceaAlreadyOpen			= 713;				// 副本处于开启状态
+	
+	
+	
+	//战斗[801-900]
+	CannotChangePkModeInPeace		= 801;				// 该场景为和平场景，不可切换PK模式!
+	CannotChangePkModeInPkAndCamp	= 802;				// 战场中不可以切换PK模式！
+	CannotChangePkModeInNovice		= 803;				// 新手保护状态，不可切换安全模式！
+	CannotChangePkModeInPurpleName  = 804;				// 处于紫名状态，不可切换PK模式！
+	ForbidSpellStateParam			= 805;				// 当前{0}状态禁止释放技能
+	NeedSpellStateParam				= 806;				// 需要{0}状态才能释放当前技能
+	NeedSpellTarget					= 807;				// 需要一个技能目标
+	SpellLocked						= 808;				// 技能被封印	
+	ForbidSpellState				= 809;				// 当前状态禁止释放技能
+	NeedSpellState					= 810;				// 需要特定状态才能释放当前技能
+	NoneTargetInRange				= 811;				// 范围内无攻击目标
+	
+	//采集[901-910]
+	IONotBelongThePlayer			= 901;				// 此地物不属于该玩家
+	IODistanceNotEnough				= 902;				// 此地物距离不足
+	IOIsUsed						= 903;				// 此地物正处于交互中
+	IONotHasQuest					= 904;				// 没有此地物需要的任务
+	IOInCD							= 905;				// 此地物处于CD中...
+	IONeedCamp						= 906;				// 当前阵营无法采集该地物
+	IOEquipFull						= 907;				// 装备栏已满
+	IOPropsFull						= 908;				// 物品栏已满
+	IOPropsLimit					= 909;				// 该物品数量已达到上限
+	
+	//宠物[1001-1050]
+	SelfPetSlotIsFull				= 1001;				// 自己宠物栏已满
+	TargetPetSlotIsFull				= 1002;				// 对方宠物栏已满
+	SelfInBreeding					= 1003;				// 自己处于繁殖状态
+	TargetInBreeding				= 1004;				// 目标处于繁殖状态
+	TargetPreventBreeding			= 1005;				// 目标禁止繁殖
+	TargetNotAgreeBreeding			= 1006;				// 目标没有同意繁殖行为
+	CreateBreedingError				= 1007;				// 创建繁殖失败
+	SelfNotInBreeding				= 1008;				// 没有处于繁殖状态
+	SelfHasNotEnoughBreedingPet		= 1009;				// 本人没有足够的繁殖宠物,交易失败
+	TargetHasNotEnoughBreedingPet	= 1010;				// 对方没有足够的繁殖宠物,交易失败
+	SelfHasNotEnoughFreePetSlot		= 1011;				// 本人没有足够的空闲槽位,交易失败
+	TargetHasNotEnoughFreePetSlot	= 1012;				// 对方没有足够的空闲槽位,交易失败
+	PetIsNotExist					= 1013;				// 没有找到这只宠物
+	PlayerIsNotNearby				= 1014;				// 玩家不在附近
+	SelfIsMatchingBreed				= 1015;				// 自己正在配对中
+	SelfIsNotMatchingBreed			= 1016;				// 自己不在配对中
+	PLayerIsMatchingBreed			= 1017;				// 玩家正在配对中
+	PLayerIsNotMatchingBreed		= 1018;				// 玩家不在配对中
+	CatchePetFail					= 1019;				// 抓宠失败
+	SelfNotHaveActivePet			= 1020;				// 自己没有出战宠物
+	TargetNotHaveActivePet			= 1021;				// 对方没有出战宠物
+	SelfPetHadBreed					= 1022;				// 自己宠物已繁殖过
+	TargetPetHadBreed				= 1023;				// 对方宠物已繁殖过
+	PetIsNotSameType				= 1024;				// 宠物种类不同
+	PetIsSameSex					= 1025;				// 宠物性别相同
+	PetHasHigherLevelSkill			= 1026;				// 宠物已经拥有了更高级的同类技能
+	BreedingPetIsNotLock			= 1027;				// 准备繁殖的宠物没有锁定
+	PetRequireLevelLimit     		= 1028;				// 宠物要求的携带等级限制，无法出战
+	PetIsDead						= 1029;				// 宠物已经死亡，无法出战
+	PetInBreed						= 1030;				// 宠物处于繁殖状态，无法出战
+	SelfPetCanNotBreed				= 1031;				// 自己的宠物不能生宝宝，它不行
+	TargetPetCanNotBreed			= 1032;				// 对方的宠物不能生宝宝，它不行
+	PetMatchCancel					= 1033;				// 宠物配对取消
+	PetGetPetBabyCancel				= 1034;				// 创建宝宝失败，领取取消
+	PetIsLocking					= 1035;				// 宠物处于锁定状态，无法进行当前操作
+	PetIsInActive					= 1036;				// 宠物处于出战状态，无法进行当前操作
+	
+	//血池[1051-1055]
+	BloodPoolFull                   = 1051;             //血池已达上限，不可以使用药品	
+	
+	//天赋[1056-1105]
+	TalentNotActive                 = 1056;             //天赋未激活
+	TalentLevelMax                  = 1057;             //天赋满级
+	TalentCostLimit                 = 1058;             //费用限制
+	TalentWeaponLimit               = 1059;             //天赋武器限制
+	
+	//玩家关系[1111-1160]
+	RelationExist					= 1111;				//关系已存在
+	SelfRelationCountLimit			= 1112;				//自己所加关系已达上限
+	TargetRelationCountLimit		= 1113;				//对方所加关系已达上限
+	TargetReject					= 1114;				//对方已拒绝
+	AddRelationSuccess				= 1115;				//申请关系成功
+	CreateRelationSuccess			= 1116;				//建立关系成功
+	
+	//商店相关[1161-1211]
+	ShopItemIsSell                  = 1161;             //商店物品已经售出
+	RefreshTimeIsZero               = 1162;             //商店刷新次数为零
+	ShopItemIsNoSale                = 1163;             //商品已下架
+	
+	//Boss卡牌相关[1212-1222]
+	BossCardNotActive               = 1212;             //Boss卡没有激活
+	MaxBossCardLevel                = 1213;             //Boss卡等级达上限
+	MaxBossCardRank                 = 1214;             //Boss卡阶位达上限
+	CantChangeActiveSpell           = 1215;             //不能更换主动Boss技能
+	CantChangePassiveSpell          = 1216;             //不能更换被动Boss技能
+	
+	//Boss技能卡牌相关[1223-1233]
+	BossSpellCardNotActive          = 1223;             //Boss技能卡没有激活
+	MaxBossSpellCardLevel           = 1224;             //Boss技能卡等级达上限
+	
+	MaxEliteCardLevel          		= 1234;             //精英卡等级达上限
+	MaxDeviceCardLevel           	= 1235;             //机关卡等级达上限
+	
+	//装备卡相关
+	EquipCardNotAcive				= 1236;				//装备卡没有激活
+	MaxEquipCardLevel				= 1237;				//装备卡等级达上限
+	EquipCardMaskLimit				= 1238;				//此卡不能装备到该位置
+	UnUsedEquipCardLimit			= 1239;				//暂时我们不允许你，卸下武器卡，等火爷实现以后，就可以了
+	UsedEquipCardError				= 1240;				//不能重复使用同一张卡
+	
+	BossPvpSettingError				= 1300;				//不对等副本配置错误
+	
+	SelfNotOpenRedPacket			= 1400;				//你发送的为专属红包，自己不能领取!
+
+	//副本相关
+	StarNumNotEnough				= 1500;				//星星数量不足
+	StageNotFound					= 1501;				//找不到关卡
+	StagePreNotPass					= 1502;				//前置副本未通关
+	StagePowerNotEnough				= 1503;				//体力不足
+	StageSweepNotEnough				= 1504;				//三星扫荡
+
+	//名器相关
+	PokedexLevelLimted				= 1520;				//名器等级上限
+
+	//阶梯价格商店
+	BuyItemLimit 					= 1530;				//购买次数不足
+	
+	//武器
+	ForbidRemoveWeapon				= 1601;				// 不可移除武器
+	ForbidChangeWeapon				= 1602;				// 不可切换武器
+
+	//被动卡牌
+	PassiveCardNotAcive				= 1610;				// 被动卡没有激活
+	MaxPassiveCardLevel				= 1611;				// 被动卡等级达上限
+	UsedPassiveCardError			        = 1614;				// 不能重复使用同一张卡
+
+	ItemInCD 					= 1615;				// 该物品CD中
+}
+
+// 错误消息
+message NsError
+{
+	required int32	Error	=	1;		// 错误类型
+}
+
+

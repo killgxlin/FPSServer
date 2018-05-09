@@ -1,0 +1,25 @@
+package PBData;
+
+// 受击体数据
+message HitVolumeData
+{
+	required string BoneName			= 1;
+	required float Radius				= 2;
+	required float Height				= 3;
+	required float X					= 4;
+	required float Y					= 5;
+	required float Z					= 6;
+}
+
+// 模型数据
+message ModelData
+{
+	required string Name				= 1;
+	repeated HitVolumeData HitVolumes	= 2;
+}
+
+// 模型数据文件
+message ModelFile
+{
+	repeated ModelData models			= 1;
+}

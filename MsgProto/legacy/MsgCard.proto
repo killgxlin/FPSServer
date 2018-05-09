@@ -1,0 +1,367 @@
+package Msg;
+
+/////////////////////////////////Boss卡牌相关/////////////////////////////////////
+
+//Boss卡牌
+message PbBossCard
+{
+	required  int32   Id             =  1;  //卡牌Id
+	required  bool    IsActive       =  2;  //是否激活
+	required  int32   Level          =  3;  //等级
+	required  int32   Rank           =  4;  //阶位
+	required  int32   Exp            =  5;  //经验
+	repeated  int32   SpellSlots     =  6;  //技能插槽
+}
+
+//初始化
+message NsPlayerInitBossCard
+{
+	repeated  PbBossCard     BossCards      =  1;  //Boss卡牌
+}
+
+//更新Boss卡牌信息
+message NsUpdateBossCard
+{
+	required PbBossCard      BossCard       =  1;
+}
+
+//Boss卡牌升级
+message NcBossCardLvUp
+{
+	required  int32          BossCardId     =  1;  //Boss卡牌Id
+	required  int32          Exp            =  2;  //经验
+}
+
+//Boss卡牌升级
+message NsBossCardLvUp
+{
+	
+}
+
+//Boss卡牌升阶
+message NcBossCardRankUp
+{
+	required  int32          BossCardId     =  1;  //Boss卡牌Id
+}
+
+//Boss卡牌升阶
+message NsBossCardRankUp
+{
+	
+}
+
+//更改Boss技能
+message NcChangeBossSpell
+{
+	required int32 BossCardId         =    1;  // Boss卡牌Id 
+	required int32 Pos                =    2;  // 槽位
+	required int32 SpellCardId        =    3;  // Boss技能卡Id
+}
+
+//更改Boss技能
+message NsChangeBossSpell
+{
+	
+}
+
+/////////////////////////////////BOSS技能卡牌相关/////////////////////////////////////
+
+enum BossSpellType
+{
+	ActiveSpell          =  0;  //主动技能
+	PassiveSpell         =  1;  //被动技能
+}
+
+message PbBossSpellCard
+{
+	required  int32   Id             =  1;  //卡牌Id
+	required  bool    IsActive       =  2;  //是否激活
+	required  int32   Level          =  3;  //等级
+}
+
+//初始化BOSS技能
+message NsPlayerInitBossSpellCard
+{
+	repeated  PbBossSpellCard    BossSpellCards      =  1; 
+}
+
+//BOSS技能牌升级
+message NcBossSpellCardLvUp
+{
+	required  int32         BossSpellCardId     =  1;  
+}
+
+//BOSS技能牌升级
+message NsBossSpellCardLvUp
+{
+	required PbBossSpellCard    BossSpellCard		=	1;	
+}
+
+//更新Boss技能卡牌信息
+message NsUpdateBossSpellCard
+{
+	required PbBossSpellCard    BossSpellCard       =  1;
+}
+
+/////////////////////////////////精英怪卡牌相关/////////////////////////////////////
+
+message PbEliteCard
+{
+	required  int32   Id             =  1;  //卡牌Id
+	required  bool    IsActive       =  2;  //是否激活
+	required  int32   Level          =  3;  //等级
+}
+
+//初始化
+message NsPlayerInitEliteCard
+{
+	repeated  PbEliteCard    EliteCards      =  1;  //精英怪卡牌
+}
+
+//精英卡牌升级
+message NcEliteCardLvUp
+{
+	required  int32         EliteCardId     =  1;  //精英怪卡牌Id
+}
+
+//精英卡牌升级
+message NsEliteCardLvUp
+{
+	required PbEliteCard    EliteCard		=	1;	//升级的精英卡信息
+}
+
+//更新精英怪卡牌信息
+message NsUpdateEliteCard
+{
+	required PbEliteCard    EliteCard       =  1;
+}
+
+/////////////////////////////////机关卡牌相关/////////////////////////////////////
+
+message PbDeviceCard
+{
+	required  int32   Id             =  1;  //卡牌Id
+	required  bool    IsActive       =  2;  //是否激活
+	required  int32   Level          =  3;  //等级
+}
+
+//初始化
+message NsPlayerInitDeviceCard
+{
+	repeated  PbDeviceCard    DeviceCards    =  1;  //Device卡牌
+}
+
+//机关卡牌升级
+message NcDeviceCardLvUp
+{
+	required  int32         DeviceCardId     =  1;  //Device卡牌Id
+}
+
+//机关卡牌升级
+message NsDeviceCardLvUp
+{
+	required PbDeviceCard    DeviceCard		=	1;	//升级的机关卡信息
+}
+
+//更新精英怪卡牌信息
+message NsUpdateDeviceCard
+{
+	required PbDeviceCard    DeviceCard      =  1;
+}
+
+/////////////////////////////////设置墓穴配置/////////////////////////////////////
+
+//配置类型枚举
+enum BossPvpLocationType
+{
+	BossCard                =  1;  //Boss卡牌
+	EliteCard               =  2;  //精英怪卡牌
+	DeviceCard              =  3;  //机关卡牌
+}
+
+//墓穴配置位置
+message PbBossPvpLocation
+{
+	required  int32     CfgId      =  1;
+	required  int32     CardId     =  2;  //卡牌Id
+}
+
+//玩家墓穴配置初始化
+message NcPlayerBossPvpSettingInit
+{
+	
+}
+
+//玩家墓穴配置初始化
+message NsPlayerBossPvpSettingInit
+{
+	repeated PbBossPvpLocation  Locations        =  1;
+}
+
+//修改墓穴配置
+message NcChangeBossPvpSetting
+{
+	repeated PbBossPvpLocation  Locations        =  1;
+}
+
+//修改墓穴配置
+message NsChangeBossPvpSetting
+{
+	repeated PbBossPvpLocation  Locations        =  1;
+}
+
+/////////////////////////////////装备卡牌相关/////////////////////////////////////
+
+message PbEquipCard
+{
+	required  int32   Id             =  1;  //卡牌Id
+	required  bool    IsActive       =  2;  //是否激活
+	required  int32   Level          =  3;  //等级
+}
+
+//初始化
+message NsPlayerInitEquipCard
+{
+	repeated  PbEquipCard    EquipCards    		=  	1;  //Equip
+	repeated  int32			 EquipCardGroup  	= 	2;	//装备上的卡牌
+	required  int32			 ActiveGroupIndex 	=	3;	//当前激活的卡组index	
+}
+
+//装备卡牌升级
+message NcEquipCardLvUp
+{
+	required  int32         EquipCardId     =  1;  //Equip卡牌Id
+}
+
+//装备卡牌升级
+message NsEquipCardLvUp
+{
+	required PbEquipCard    EquipCard		=	1;	//升级的机关卡信息
+}
+
+//更新装备怪卡牌信息
+message NsUpdateEquipCard
+{
+	required PbEquipCard    EquipCard      =  1;
+}
+
+//装备
+message NcUsedEquipCard
+{
+	required	int32		Index			=	1;
+	required	int32       EquipCardId		=	2;
+}
+
+message NsUsedEquipCard
+{
+	required	int32		Index			=	1;
+	required	int32       EquipCardId		=	2;
+}
+
+//卸下
+message NcUnUsedEquipCard
+{
+	required	int32       Index			=	1;
+}
+
+message NsUnUsedEquipCard
+{
+	required	int32		Index			=	1;
+	required	int32       EquipCardId		=	2;
+}
+
+//激活对应的装备组
+message NcActiveEquipCardGroup
+{
+	required	int32		Index			=	1;
+}
+
+message NsActiveEquipCardGroup
+{
+	required	int32 		ActiveGoupIndex = 	1;
+}
+
+//激活装备卡提示
+message NsActiveEquipCardTips
+{
+	required    int32 		EquipCardId		=	1;
+}
+
+
+//////////////////////////被动卡牌相关/////////////////////////////
+
+message PbPassiveCard
+{
+	required  int32   Id             =  1;  //卡牌Id
+	required  bool    IsActive       =  2;  //是否激活
+	required  int32   Level          =  3;  //等级
+}
+
+
+//初始化
+message NsPlayerInitPassiveCard
+{
+	repeated  PbPassiveCard    PassiveCards    		=  	1;  //Equip
+	repeated  int32			 PassiveCardGroup  		= 	2;	//装备上的卡牌
+	required  int32			 ActiveGroupIndex 		=	3;	//当前激活的卡组index	
+}
+
+//装备卡牌升级
+message NcPassiveCardLvUp
+{
+	required  int32         PassiveCardId    		=  1;  //卡牌Id
+}
+
+//装备卡牌升级
+message NsPassiveCardLvUp
+{
+	required PbPassiveCard    PassiveCard				=	1;	//升级的卡牌
+}
+
+//更新装备怪卡牌信息
+message NsUpdatePassiveCard
+{
+	required PbPassiveCard    PassiveCard      		=  1;
+}
+
+//装备
+message NcUsedPassiveCard
+{
+	required	int32		Index					=	1;
+	required	int32       PassiveCardId			=	2;
+}
+
+message NsUsedPassiveCard
+{
+	required	int32		Index					=	1;
+	required	int32       PassiveCardId			=	2;
+}
+
+//卸下
+message NcUnUsedPassiveCard
+{
+	required	int32       Index					=	1;
+}
+
+message NsUnUsedPassiveCard
+{
+	required	int32		Index					=	1;
+	required	int32       PassiveCardId			=	2;
+}
+
+//激活对应的装备组
+message NcActivePassiveCardGroup
+{
+	required	int32		Index					=	1;
+}
+
+message NsActivePassiveCardGroup
+{
+	required	int32 		ActiveGoupIndex 		= 	1;
+}
+
+//激活装备卡提示
+message NsActivePassiveCardTips
+{
+	required    int32 		PassiveCardId			=	1;
+}

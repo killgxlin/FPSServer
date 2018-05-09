@@ -1,0 +1,93 @@
+package Msg;
+import "protos/MsgBaseDefine.proto";
+
+// 登陆消息
+message NcLogin
+{
+	required string		Token			=	1;		// 账号id
+}
+
+message NsLogin
+{
+	required int32		Error			=	1;
+	required int64		PlayerId		=	2;
+}
+
+message NsLogOut
+{
+	required int32      Error			=	1;
+}
+
+message PbRoleInfo
+{
+	required int64 PlayerId = 1;
+	required int32 Sex = 2;
+    required int32 Clazz = 3;
+    required string Name = 4;
+	required PbAvatar Avatar = 5;
+	required int32 RebirthLevel = 6;
+    required int32 Level = 7;
+	required int32 TrunkQuestId = 8;
+	required int32 MatchScore = 9;
+	required int32 FightScore = 10;  //战斗力
+	required int32 VipLevel   = 11;  //Vip等级
+}
+
+message NsRequirePlayers
+{
+	required int32 Error = 1;
+	repeated PbRoleInfo Players = 2;
+}
+
+message NcCreatePlayer
+{
+	required int32 Sex = 1;
+	required int32 Clazz = 2;
+	required PbAvatar Avatar = 3;
+	required string Name = 4;
+}
+
+message NsCreatePlayer
+{
+	required int32 Error = 1;
+	optional PbRoleInfo NewPlayer = 2;
+}
+
+message NcDeletePlayer
+{
+    required int64 PlayerId = 1;	
+}
+
+message NsDeletePlayer
+{
+    required int32 Error = 1;	
+}
+
+// 进入游戏
+message NcEnterWorld
+{
+	required string 	WorldName		=	1;		// 进入的世界
+}
+
+message NsEnterWorld
+{
+	required int32		Error			=	1;
+	required string 	WorldName		=	2;		// 进入的世界
+	repeated string		FoundFormula	=	3;			// 本世界已被该玩家发现的物品合成配方
+}
+
+// 服务器心跳包
+message NsHeartBeat
+{
+
+}
+
+// 获取服务器时间
+message NcGetServerTime
+{
+}
+
+message NsGetServerTime
+{
+	required  int64   Time				=	1;
+}
