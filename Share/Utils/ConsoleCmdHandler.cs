@@ -6,11 +6,13 @@ namespace Share.Utils
 {
     public class ConsoleCmdHandler
     {
-        List<string> cmds = new List<string>();
+        private readonly List<string> cmds = new List<string>();
+
+        public Action<string[]> OnCmd;
 
         public ConsoleCmdHandler()
         {
-            ThreadPool.QueueUserWorkItem((object obj) =>
+            ThreadPool.QueueUserWorkItem(obj =>
             {
                 while (true)
                 {
@@ -38,7 +40,5 @@ namespace Share.Utils
                 cmds.Clear();
             }
         }
-
-        public Action<string[]> OnCmd;
     }
 }

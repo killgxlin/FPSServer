@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Reflection;
 using System.Threading.Tasks;
 using Proto;
 using ProtoBuf;
-using Share;
 using Share.Network;
 using Share.Utils;
 
@@ -12,22 +12,24 @@ namespace FPSServer.Actors
 {
     internal class NetworkCmd
     {
-        public IExtensible msg;
-        public Int64 peerId;
         public bool disconnect = false;
+        public IExtensible msg;
+        public long peerId;
     }
 
     internal class NetworkActor : IActor
     {
-        Share.Network.UDPServer svr = new UDPServer();
-        PBTypeDB typeDb = new PBTypeDB(Assembly.GetExecutingAssembly());
-        private PID selfPID = null;
+        private readonly Dictionary<long, PeerData> peerToCodec = new Dictionary<long, PeerData>();
+        private PID selfPID;
+        private readonly UDPServer svr = new UDPServer();
+        private readonly PBTypeDB typeDb = new PBTypeDB(Assembly.GetExecutingAssembly());
+
         public Task ReceiveAsync(IContext context)
         {
             Util.LogMsg(context);
             switch (context.Message)
             {
-                case Proto.Started started:
+                case Started started:
                     selfPID = context.Self;
                     svr.Listen(1234);
                     svr.OnConnect = onConnect;
@@ -35,17 +37,14 @@ namespace FPSServer.Actors
                     svr.OnReceive = onReceive;
                     context.Self.Tell("heart");
                     break;
-                case Proto.Stopping stopping:
+                case Stopping stopping:
                     break;
-                case Proto.Stopped stopped:
+                case Stopped stopped:
                     svr.Dispose();
                     break;
                 case NetworkCmd cmd:
                     sendMsg(cmd.peerId, cmd.msg);
-                    if (cmd.disconnect)
-                    {
-                        disconnect(cmd.peerId);
-                    }
+                    if (cmd.disconnect) disconnect(cmd.peerId);
                     break;
                 case string cmd:
                     if (cmd == "heart")
@@ -53,25 +52,27 @@ namespace FPSServer.Actors
                         svr.Update();
                         context.Self.Tell("heart");
                     }
+
                     break;
             }
+
             return Actor.Done;
         }
 
-        private void onConnect(Int64 peerId)
+        private void onConnect(long peerId)
         {
-            System.Diagnostics.Debug.Assert(!peerToCodec.ContainsKey(peerId));
+            Debug.Assert(!peerToCodec.ContainsKey(peerId));
 
             var data = new PeerData();
             peerToCodec[peerId] = data;
-            Global.RoomPID.Tell(new RoomCmdEnter { peerId = peerId });
+            Global.RoomPID.Tell(new RoomCmdEnter {peerId = peerId});
 
             data.codec.FrameCb = frame =>
             {
                 try
                 {
                     var msg = PBSerializer.Deserialize(typeDb, frame);
-                    Global.RoomPID.Tell(new RoomCmdMsg { msg = msg, peerId = peerId });
+                    Global.RoomPID.Tell(new RoomCmdMsg {msg = msg, peerId = peerId});
                 }
                 catch (Exception e)
                 {
@@ -81,7 +82,7 @@ namespace FPSServer.Actors
         }
 
 
-        private void sendMsg(Int64 peerId, IExtensible msg)
+        private void sendMsg(long peerId, IExtensible msg)
         {
             var frame = PBSerializer.Serialize(msg);
             var builder = new ByteBuilder();
@@ -89,25 +90,25 @@ namespace FPSServer.Actors
             builder.Add(frame);
             svr.SendBytes(peerId, builder.ToArrayThenClear());
         }
-        
-        private void disconnect(Int64 peerId)
+
+        private void disconnect(long peerId)
         {
             svr.Disconnect(peerId);
         }
 
-        private void onDisconnect(Int64 peerId)
+        private void onDisconnect(long peerId)
         {
-            System.Diagnostics.Debug.Assert(peerToCodec.ContainsKey(peerId));
+            Debug.Assert(peerToCodec.ContainsKey(peerId));
 
             var data = peerToCodec[peerId];
             peerToCodec.Remove(peerId);
 
-            Global.RoomPID.Tell(new RoomCmdExit { peerId = peerId });
+            Global.RoomPID.Tell(new RoomCmdExit {peerId = peerId});
         }
 
-        private void onReceive(Int64 peerId, byte[] bytes, byte channelId)
+        private void onReceive(long peerId, byte[] bytes, byte channelId)
         {
-            System.Diagnostics.Debug.Assert(peerToCodec.ContainsKey(peerId));
+            Debug.Assert(peerToCodec.ContainsKey(peerId));
 
             var data = peerToCodec[peerId];
             data.codec.Feed(bytes);
@@ -115,13 +116,12 @@ namespace FPSServer.Actors
 
         private class PeerData
         {
-            public FrameCodec codec;
+            public readonly FrameCodec codec;
 
             public PeerData()
             {
                 codec = new FrameCodec();
             }
         }
-        private Dictionary<Int64, PeerData> peerToCodec = new Dictionary<Int64, PeerData>();
     }
 }

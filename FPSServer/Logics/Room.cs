@@ -1,27 +1,25 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using FPSServer.Logics.Sync;
-using Msg;
-using Share;
+using ProtoBuf;
 using Share.Game;
 using Share.Sync;
 using Share.Utils;
 
 namespace FPSServer.Logics
 {
-    class Room
+    internal class Room
     {
-        public Action<Int64, ProtoBuf.IExtensible> SendMsg;
-        public Action<Int64> Kick;
+        public Action<long> Kick;
+
+
+        // ----------------------------------------------
+        private readonly SyncScene scene = new SyncScene();
+        public Action<long, IExtensible> SendMsg;
 
         public void Init()
         {
             scene.Init();
             scene.onSendMsg = SendMsg;
-            this.Info("Inited");   
+            this.Info("Inited");
         }
 
         public void Destory()
@@ -35,7 +33,7 @@ namespace FPSServer.Logics
             scene.MasterUpdateObjs();
         }
 
-        public void Login(Int64 playerId)
+        public void Login(long playerId)
         {
             var player = new Player();
             player.id = playerId;
@@ -49,19 +47,17 @@ namespace FPSServer.Logics
 
             this.Info("Login playerId:{0}", playerId);
         }
-        public void Logout(Int64 playerId)
+
+        public void Logout(long playerId)
         {
             scene.MasterRemoveObj(playerId);
             this.Info("Logout playerId:{0}", playerId);
         }
-        public void RecvMsg(Int64 playerId, ProtoBuf.IExtensible msg)
+
+        public void RecvMsg(long playerId, IExtensible msg)
         {
             this.Info("RecvMsg playerId:{0}, msg:{1}", playerId, msg.GetType());
             scene.MasterDealMsg(msg);
         }
-
-
-        // ----------------------------------------------
-        SyncScene scene = new SyncScene();
     }
 }

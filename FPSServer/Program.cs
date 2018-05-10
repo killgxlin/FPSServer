@@ -1,30 +1,20 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Security.Cryptography;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using FPSServer.Actors;
-using Msg;
 using Proto;
-using ProtoBuf;
-using Share;
-using Share.Network;
 using Share.Utils;
 
 namespace FPSServer
 {
-    class Global
+    internal class Global
     {
-        static public PID NetworkPID;
-        static public PID RoomPID;
+        public static PID NetworkPID;
+        public static PID RoomPID;
     }
-    class Program
+
+    internal class Program
     {
-        static void Main(string[] arg)
+        private static void Main(string[] arg)
         {
             Global.NetworkPID = Actor.SpawnNamed(Actor.FromProducer(() => new NetworkActor()), "Network");
             Global.RoomPID = Actor.SpawnNamed(Actor.FromProducer(() => new RoomActor()), "Room");
@@ -51,6 +41,7 @@ namespace FPSServer
             {
                 LoggerUtil.Fatal(typeof(Program), e.ToString());
             }
+
             Global.RoomPID.Stop();
             Global.NetworkPID.Stop();
             LoggerUtil.Info(typeof(Program), "server exited");

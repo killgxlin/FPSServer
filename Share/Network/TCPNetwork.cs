@@ -10,21 +10,25 @@ namespace Share.Network
 {
     public class TCPConnections : IDisposable
     {
-        public class EventData
-        {
-            public Connection conn;
-            public byte[] msg;
-            public int typ;
-        }
+        private readonly Dictionary<long, Connection> conns = new Dictionary<long, Connection>();
 
-        Queue<EventData> queue = new Queue<EventData>();
+        public Action<long> OnConnect;
+        public Action<long> OnDisconnect;
+        public Action<long, byte[], byte> OnReceive;
+
+        private readonly Queue<EventData> queue = new Queue<EventData>();
+
+        public virtual void Dispose()
+        {
+            queue.Clear();
+        }
 
         protected void sendEd(Connection conn, int typ)
         {
-            var ed = new TCPConnections.EventData
+            var ed = new EventData
             {
                 conn = conn,
-                typ = typ,
+                typ = typ
             };
             switch (typ)
             {
@@ -40,10 +44,6 @@ namespace Share.Network
             }
         }
 
-        public Action<Int64> OnConnect;
-        public Action<Int64, byte[], byte> OnReceive;
-        public Action<Int64> OnDisconnect;
-        private Dictionary<Int64, Connection> conns = new Dictionary<long, Connection>();
         public void Update()
         {
             lock (queue)
@@ -54,7 +54,7 @@ namespace Share.Network
                     switch (ed.typ)
                     {
                         case 0:
-                            conns.Add(ed.conn.Id+1, ed.conn);
+                            conns.Add(ed.conn.Id + 1, ed.conn);
                             OnConnect?.Invoke(ed.conn.Id + 1);
                             break;
                         case 1:
@@ -69,23 +69,27 @@ namespace Share.Network
             }
         }
 
-        public virtual void Dispose()
-        {
-            queue.Clear();
-        }
-
-        public void SendBytes(Int64 peerId, byte[] bytes)
+        public void SendBytes(long peerId, byte[] bytes)
         {
             conns[peerId].Send(bytes);
         }
-        public void Disconnect(Int64 peerId)
+
+        public void Disconnect(long peerId)
         {
             conns[peerId].Close();
         }
+
+        public class EventData
+        {
+            public Connection conn;
+            public byte[] msg;
+            public int typ;
+        }
     }
+
     public class TCPServer : TCPConnections
     {
-        TcpServer svr = new TcpServer();
+        private readonly TcpServer svr = new TcpServer();
 
         public void Listen(int port)
         {
@@ -111,7 +115,7 @@ namespace Share.Network
     {
         public void Connect(string ip, int port)
         {
-            var cli = SocketMessaging.TcpClient.Connect(IPAddress.Parse(ip), port);
+            var cli = TcpClient.Connect(IPAddress.Parse(ip), port);
             cli.SetMode(MessageMode.PrefixedLength);
             cli.Disconnected += (o, eventArgs) => sendEd(o as Connection, 2);
             cli.ReceivedMessage += (o, eventArgs) => sendEd(o as Connection, 1);
@@ -120,12 +124,11 @@ namespace Share.Network
     }
 
 
-    class TCPNetworkTest
+    internal class TCPNetworkTest
     {
-
-        static public void RunServer(object obj)
+        public static void RunServer(object obj)
         {
-            var peers = new HashSet<Int64>();
+            var peers = new HashSet<long>();
             using (var svr = new TCPServer())
             {
                 svr.OnConnect = peerId =>
@@ -140,10 +143,8 @@ namespace Share.Network
 
                     bytes = Encoding.ASCII.GetBytes(string.Format("{0}:{1}", peerId, msg));
                     foreach (var peer in peers)
-                    {
                         if (peer != peerId)
                             svr.SendBytes(peer, bytes);
-                    }
                 };
                 svr.OnDisconnect = peerId =>
                 {
@@ -153,14 +154,11 @@ namespace Share.Network
 
                 svr.Listen(1234);
 
-                while (true)
-                {
-                    svr.Update();
-                }
+                while (true) svr.Update();
             }
         }
 
-        static public void RunClient(object obj)
+        public static void RunClient(object obj)
         {
             using (var cli = new TCPClient())
             {
@@ -176,23 +174,19 @@ namespace Share.Network
                     cli.Disconnect(peerId);
                 };
 
-                cli.OnDisconnect = (peerId) =>
+                cli.OnDisconnect = peerId =>
                 {
                     Console.WriteLine("{0} disconnected", peerId);
                     cli.Connect("127.0.0.1", 1234);
                 };
 
                 cli.Connect("127.0.0.1", 1234);
-                while (true)
-                {
-                    cli.Update();
-                }
+                while (true) cli.Update();
             }
         }
 
         public static void Test(string[] args)
         {
-
             ThreadPool.QueueUserWorkItem(RunServer);
             Thread.Sleep(100);
 

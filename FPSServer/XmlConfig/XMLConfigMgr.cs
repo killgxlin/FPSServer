@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace FPSServer.XmlConfig
+﻿namespace FPSServer.XmlConfig
 {
-    class XMLConfigMgr
+    internal class XMLConfigMgr
     {
         private string resPath;
+
         public bool Init(string resPath)
         {
             this.resPath = resPath;
@@ -17,7 +12,6 @@ namespace FPSServer.XmlConfig
 
         public void Destroy()
         {
-
         }
     }
 }

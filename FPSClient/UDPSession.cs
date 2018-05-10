@@ -1,33 +1,23 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using Msg;
-using Newtonsoft.Json;
 using ProtoBuf;
-using Share;
 using Share.Network;
 using Share.Utils;
 
 namespace FPSClient
 {
-    class UDPSession : IDisposable
+    internal class UDPSession : IDisposable
     {
-        public PBTypeDB typeDb;
         public UDPClient cli;
         public FrameCodec codec;
-
-        private Int64 peerId = 0;
-
-        public bool Connected { private set; get; } = false;
-        public bool Connecting { private set; get; } = false;
-
-        public Action<IExtensible> OnMsg;
         public Action OnConnect;
         public Action OnDisconnect;
+
+        public Action<IExtensible> OnMsg;
+
+        private long peerId;
+        public PBTypeDB typeDb;
 
 
         public UDPSession()
@@ -38,7 +28,7 @@ namespace FPSClient
 
             cli.OnConnect = peerId =>
             {
-                System.Diagnostics.Debug.Assert(this.peerId == 0);
+                Debug.Assert(this.peerId == 0);
 
                 Connecting = false;
                 Connected = true;
@@ -49,7 +39,7 @@ namespace FPSClient
 
             cli.OnDisconnect = peerId =>
             {
-                System.Diagnostics.Debug.Assert(this.peerId == peerId);
+                Debug.Assert(this.peerId == peerId);
 
 
                 Connecting = false;
@@ -60,7 +50,7 @@ namespace FPSClient
             };
             cli.OnReceive = (peerId, bytes, channelId) =>
             {
-                System.Diagnostics.Debug.Assert(this.peerId == peerId);
+                Debug.Assert(this.peerId == peerId);
 
                 codec.Feed(bytes);
             };
@@ -77,34 +67,10 @@ namespace FPSClient
                     this.Fatal("{0}:{1}", peerId, e.ToString());
                 }
             };
-
         }
 
-        public void Connect()
-        {
-            System.Diagnostics.Debug.Assert(peerId == 0 && Connecting == false && Connected == false);
-            cli.Connect("127.0.0.1", 1234);
-        }
-
-        public void Disconnect()
-        {
-            System.Diagnostics.Debug.Assert(peerId != 0);
-            if (!Connected)
-                return;
-
-            cli.Disconnect(peerId);
-        }
-
-        public void Send(IExtensible msg)
-        {
-            System.Diagnostics.Debug.Assert(peerId != 0);
-
-            var frame = PBSerializer.Serialize(msg);
-            var builder = new ByteBuilder();
-            builder.Add(frame.Length, Endians.Little);
-            builder.Add(frame);
-            cli.SendBytes(peerId, builder.ToArrayThenClear());
-        }
+        public bool Connected { private set; get; }
+        public bool Connecting { private set; get; }
 
         public void Dispose()
         {
@@ -114,10 +80,35 @@ namespace FPSClient
             typeDb = null;
         }
 
+        public void Connect()
+        {
+            Debug.Assert(peerId == 0 && Connecting == false && Connected == false);
+            cli.Connect("127.0.0.1", 1234);
+        }
+
+        public void Disconnect()
+        {
+            Debug.Assert(peerId != 0);
+            if (!Connected)
+                return;
+
+            cli.Disconnect(peerId);
+        }
+
+        public void Send(IExtensible msg)
+        {
+            Debug.Assert(peerId != 0);
+
+            var frame = PBSerializer.Serialize(msg);
+            var builder = new ByteBuilder();
+            builder.Add(frame.Length, Endians.Little);
+            builder.Add(frame);
+            cli.SendBytes(peerId, builder.ToArrayThenClear());
+        }
+
         public void Update()
         {
             cli.Update();
         }
     }
 }
-

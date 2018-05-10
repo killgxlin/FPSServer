@@ -5,22 +5,17 @@ using ProtoBuf;
 
 namespace Share.Network
 {
-
-
-    class PBDispatcher
+    internal class PBDispatcher
     {
-        class HandlerCb
+        private readonly List<object> handlers = new List<object>();
+        private readonly Dictionary<int, TypeInfo> msgTypes = new Dictionary<int, TypeInfo>();
+
+        private readonly List<Type> typeHandlers = new List<Type>();
+
+        public PBDispatcher()
         {
-            public object handler;
-            public Type handlerType;
-            public MethodInfo method;
+            init();
         }
-        class TypeInfo
-        {
-            public Type type;
-            public List<HandlerCb> handlers = new List<HandlerCb>();
-        }
-        private Dictionary<int, TypeInfo> msgTypes = new Dictionary<int, TypeInfo>();
 
         public Type FindType(int msgId)
         {
@@ -31,10 +26,6 @@ namespace Share.Network
             return info.type;
         }
 
-        public PBDispatcher()
-        {
-            init();
-        }
         private void init()
         {
             TypeInfo info = null;
@@ -49,27 +40,22 @@ namespace Share.Network
 
                 var hashCode = definedType.FullName.GetHashCode();
                 if (msgTypes.TryGetValue(hashCode, out info))
-                    throw new Exception(string.Format("{0} collide with {1}!!!!!!!!!!!", definedType.FullName, info.type.FullName));
+                    throw new Exception(string.Format("{0} collide with {1}!!!!!!!!!!!", definedType.FullName,
+                        info.type.FullName));
 
-                msgTypes.Add(hashCode, new TypeInfo { type = definedType });
+                msgTypes.Add(hashCode, new TypeInfo {type = definedType});
             }
         }
 
         public void Dispatch(IExtensible obj)
         {
-            var msgId = PBUtil.MsgId(obj);
+            var msgId = obj.MsgId();
             TypeInfo info = null;
-            if (!msgTypes.TryGetValue(msgId, out info))
-            {
-                return;
-            }
-            
-            if (info.handlers.Count == 0)
-            {
-                return;
-            }
+            if (!msgTypes.TryGetValue(msgId, out info)) return;
 
-            var args = new object[] { obj };
+            if (info.handlers.Count == 0) return;
+
+            var args = new object[] {obj};
             info.handlers.ForEach(hcb =>
             {
                 try
@@ -80,7 +66,6 @@ namespace Share.Network
                 {
                     throw;
                 }
-                
             });
         }
 
@@ -96,7 +81,7 @@ namespace Share.Network
                 if (methodInfo.IsStatic)
                     return null;
             }
-                
+
 
             if (!methodInfo.Name.Contains("On"))
                 return null;
@@ -115,8 +100,6 @@ namespace Share.Network
             return paraType;
         }
 
-        private List<object> handlers = new List<object>();
-
         public void AddHandler(object handler)
         {
             if (handlers.Contains(handler))
@@ -130,7 +113,7 @@ namespace Share.Network
                     continue;
 
                 var hashCode = paraType.FullName.GetHashCode();
-                msgTypes[hashCode].handlers.Add(new HandlerCb { handler = handler, method = methodInfo });
+                msgTypes[hashCode].handlers.Add(new HandlerCb {handler = handler, method = methodInfo});
             }
 
             handlers.Add(handler);
@@ -155,8 +138,6 @@ namespace Share.Network
             handlers.Remove(handler);
         }
 
-        private List<Type> typeHandlers = new List<Type>();
-
         public void AddHandler(Type handler)
         {
             if (typeHandlers.Contains(handler))
@@ -170,7 +151,7 @@ namespace Share.Network
                     continue;
 
                 var hashCode = paraType.FullName.GetHashCode();
-                msgTypes[hashCode].handlers.Add(new HandlerCb { handlerType = handler, method = methodInfo });
+                msgTypes[hashCode].handlers.Add(new HandlerCb {handlerType = handler, method = methodInfo});
             }
 
             typeHandlers.Add(handler);
@@ -194,8 +175,8 @@ namespace Share.Network
 
             typeHandlers.Remove(handler);
         }
-        
-        static public void Test(string[] args)
+
+        public static void Test(string[] args)
         {
             var d = new PBDispatcher();
             d.init();
@@ -207,10 +188,19 @@ namespace Share.Network
             //d.RemoveHandler(h1);
             //d.TestDispatch(new NsScriptTest { Id = 123, Name = "hello" });
             //d.TestDispatch(new PbVec3 { X = 0.0f, Y = 1.0f, Z = 2.0f });
+        }
 
-            return;
+        private class HandlerCb
+        {
+            public object handler;
+            public Type handlerType;
+            public MethodInfo method;
+        }
 
+        private class TypeInfo
+        {
+            public readonly List<HandlerCb> handlers = new List<HandlerCb>();
+            public Type type;
         }
     }
-
 }

@@ -8,23 +8,29 @@ using Share.Game;
 namespace Share.Sync
 {
     // ------------------------------------------------------------------------------------------------------------------
-    
+
     // ---------------------------------------------------------
-    class TestMe
+    internal class TestMe
     {
-        private Queue<IExtensible> queue = new Queue<IExtensible>();
+        private readonly Queue<IExtensible> queue = new Queue<IExtensible>();
+
         public void Server(object obj)
         {
             var scene = new SyncScene();
             scene.Init();
 
-            scene.MasterAddObj(new GameState{canRecvMsg = false, id=3, safePoint = new Vector3(), safeRadius = 1000});
+            scene.MasterAddObj(new GameState
+            {
+                canRecvMsg = false,
+                id = 3,
+                safePoint = new Vector3(),
+                safeRadius = 1000
+            });
 
-            scene.onSendMsg = (id, msg) => {
-                if (id!=1)
-                {
-                    return;
-                }
+            scene.onSendMsg = (id, msg) =>
+            {
+                if (id != 1) return;
+
                 lock (queue)
                 {
                     queue.Enqueue(msg);
@@ -71,6 +77,7 @@ namespace Share.Sync
                 scene.MasterUpdateObjs();
                 Thread.Sleep(100);
             }
+
             scene.MasterRemoveObj(p2.id);
 
 
@@ -84,7 +91,7 @@ namespace Share.Sync
             {
                 lock (queue)
                 {
-                    while (queue.Count>0)
+                    while (queue.Count > 0)
                     {
                         var msg = queue.Dequeue();
                         switch (msg)
@@ -99,11 +106,11 @@ namespace Share.Sync
                                         case Player player:
                                             player.csFire = (dst, count, hit) => { };
                                             player.csMove = (pos, dir, state) => { };
-                                            player.scExplode = () => { /* play effect */ };
-                                            if (added.id == 1)
+                                            player.scExplode = () =>
                                             {
-                                                player.csFire(2, 5, true);
-                                            }
+                                                /* play effect */
+                                            };
+                                            if (added.id == 1) player.csFire(2, 5, true);
 
                                             break;
                                     }

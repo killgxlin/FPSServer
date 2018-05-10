@@ -2,11 +2,14 @@
 using NLog;
 using NLog.Config;
 using NLog.Targets;
+using LogLevel = NLog.LogLevel;
 
 namespace Share.Utils
 {
     public static class LoggerUtil
     {
+        private static bool inited;
+
         public static void Fatal(this object obj, string fmt, params object[] args)
         {
             var logger = getLogger(obj.GetType().FullName);
@@ -91,9 +94,7 @@ namespace Share.Utils
             logger?.Log(level, fmt, args);
         }
 
-        private static bool inited = false;
-
-        private static NLog.Logger getLogger(string name)
+        private static Logger getLogger(string name)
         {
             if (!inited)
             {
@@ -109,16 +110,17 @@ namespace Share.Utils
                 fileTarget.FileName = "${basedir}/file.txt";
                 fileTarget.Layout = @"${date:format=HH\:mm\:ss} [${logger}] ${message}";
 
-                var rule1 = new LoggingRule("*", NLog.LogLevel.Trace, consoleTarget);
+                var rule1 = new LoggingRule("*", LogLevel.Trace, consoleTarget);
                 cfg.LoggingRules.Add(rule1);
 
-                var rule2 = new LoggingRule("*", NLog.LogLevel.Trace, fileTarget);
+                var rule2 = new LoggingRule("*", LogLevel.Trace, fileTarget);
                 cfg.LoggingRules.Add(rule2);
 
                 LogManager.Configuration = cfg;
 
                 inited = true;
             }
+
             return LogManager.GetLogger(name);
         }
     }

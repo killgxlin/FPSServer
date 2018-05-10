@@ -1,46 +1,46 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using FPSServer.Logics;
 using Proto;
 using ProtoBuf;
-using Share;
 
 namespace FPSServer.Actors
 {
     internal class RoomCmdEnter
     {
-        public Int64 peerId;
-        public Int64 playerId;
+        public long peerId;
+        public long playerId;
     }
+
     internal class RoomCmdExit
     {
-        public Int64 peerId;
+        public long peerId;
     }
+
     internal class RoomCmdMsg
     {
-        public Int64 peerId;
         public IExtensible msg;
+        public long peerId;
     }
 
     internal class RoomActor : IActor
     {
-        private Room room = new Room();
+        private readonly Room room = new Room();
 
         public Task ReceiveAsync(IContext context)
         {
             Util.LogMsg(context);
             switch (context.Message)
             {
-                case Proto.Started started:
+                case Started started:
                     room.Kick = kick;
                     room.SendMsg = sendMsg;
                     room.Init();
                     context.Self.Tell("heart");
                     break;
-                case Proto.Stopping stopping:
+                case Stopping stopping:
                     room.Destory();
                     break;
-                case Proto.Stopped stopped:
+                case Stopped stopped:
                     break;
                 case RoomCmdMsg rMsg:
                     room?.RecvMsg(rMsg.peerId, rMsg.msg);
@@ -57,19 +57,21 @@ namespace FPSServer.Actors
                         room.Update();
                         context.Self.Tell("heart");
                     }
+
                     break;
             }
+
             return Actor.Done;
         }
 
-        private void sendMsg(Int64 peerId, IExtensible msg)
+        private void sendMsg(long peerId, IExtensible msg)
         {
-            Global.NetworkPID.Tell(new NetworkCmd { peerId = peerId, msg = msg });
+            Global.NetworkPID.Tell(new NetworkCmd {peerId = peerId, msg = msg});
         }
 
-        private void kick(Int64 peerId)
+        private void kick(long peerId)
         {
-            Global.NetworkPID.Tell(new NetworkCmd { peerId = peerId, disconnect = true });
+            Global.NetworkPID.Tell(new NetworkCmd {peerId = peerId, disconnect = true});
         }
     }
 }

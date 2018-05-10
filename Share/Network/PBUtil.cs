@@ -7,7 +7,7 @@ namespace Share.Network
         public const int MAX_SIZE = 1024 * 1024;
         private const int HEADER_SIZE = 4;
 
-        static public int MsgId(this IExtensible msg)
+        public static int MsgId(this IExtensible msg)
         {
             return msg.GetType().FullName.GetHashCode();
         }

@@ -1,27 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using Msg;
-using Share.Network;
-using ProtoBuf;
-using Share;
-using Newtonsoft.Json;
-using System.Diagnostics;
 using Share.Sync;
 using Share.Utils;
 
 namespace FPSClient
 {
-    class Program
+    internal class Program
     {
-        
-        static void Main(string[] arg)
+        private static void Main(string[] arg)
         {
-
             try
             {
                 SyncScene scene = null;
@@ -31,20 +17,11 @@ namespace FPSClient
                 using (var sess = new TCPSession())
                 {
                     sess.Connect();
-                    sess.OnMsg = (msg) =>
-                    {
-                        sess.Trace("msg:{0}", msg);
-                    };
+                    sess.OnMsg = msg => { sess.Trace("msg:{0}", msg); };
 
-                    sess.OnConnect = () => 
-                    {
-                        sess.Trace("connected");
-                    };
+                    sess.OnConnect = () => { sess.Trace("connected"); };
 
-                    sess.OnDisconnect = () =>
-                    {
-                        sess.Trace("disconnected");
-                    };
+                    sess.OnDisconnect = () => { sess.Trace("disconnected"); };
 
 
                     handler.OnCmd = args =>
@@ -73,7 +50,6 @@ namespace FPSClient
                         sess.Update();
                     }
                 }
-
             }
             catch (Exception e)
             {
