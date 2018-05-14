@@ -69,6 +69,13 @@ namespace Share.Sync
 
         public Dictionary<Int64, SyncObj> objects;      // 所有可同步对象
 
+        public SyncObj FindObj(Int64 id)
+        {
+            SyncObj obj = null;
+            objects.TryGetValue(id, out obj);
+            return obj;
+        }
+        
         public void Init()
         {
 
