@@ -37,6 +37,15 @@ namespace Share.Network
 
         protected unsafe void onConnect(Peer peer)
         {
+            try
+            {
+                peer.SetTimeouts(0, 3000000, 3000000);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+            
             var ptr = (IntPtr) peer.NativeData;
             var peerId = ptr.ToInt64();
             peers.Add(peerId, peer);

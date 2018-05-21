@@ -50,8 +50,9 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ENet, Version=1.3.6.3, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="ENet, Version=1.3.6.3, Culture=neutral, PublicKeyToken=null">
       <HintPath>..\packages\ENet.1.3.6.3\lib\ENet.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <HintPath>..\packages\NLog.4.5.3\lib\net45\NLog.dll</HintPath>
@@ -80,6 +81,7 @@
     <Compile Include="Game\Objects.cs" />
     <Compile Include="MsgProto\MsgFPS.cs" />
     <Compile Include="Network\TCPNetwork.cs" />
+    <Compile Include="Network\UDPNetworkMT.cs" />
     <Compile Include="Sync\Sync.cs" />
     <Compile Include="Sync\Usage.cs" />
     <Compile Include="Utils\ConsoleCmdHandler.cs" />
@@ -96,18 +98,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="libenet.dylib">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    <None Include="ENetX64.dll" />
+    <None Include="ENetX86.dll" />
+    <None Include="libenet.dylib" />
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="ENetX64.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="ENetX86.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Linq;
+using System.Text;
+using Assets.Script.ClientCore.Network;
 using Share.Sync;
 using Share.Utils;
 
@@ -14,32 +17,38 @@ namespace FPSClient
                 var quit = false;
                 var handler = new ConsoleCmdHandler();
                 LoggerUtil.Info(typeof(Program), "client inited");
-                using (var sess = new TCPSession())
+                using (var cli = new UDPNetworkMT())
                 {
-                    sess.Connect();
-                    sess.OnMsg = msg => { sess.Trace("msg:{0}", msg); };
-
-                    sess.OnConnect = () => { sess.Trace("connected"); };
-
-                    sess.OnDisconnect = () => { sess.Trace("disconnected"); };
-
-
+                    cli.Trace = true;
+                    cli.OnConnect = () => LoggerUtil.Info(typeof(Program), "connected");
+                    cli.OnDisconnect = () => LoggerUtil.Info(typeof(Program), "disconnected");
+                    cli.OnReceive = (bytes, channelId) => LoggerUtil.Info(typeof(Program), "recv: " + Encoding.ASCII.GetString(bytes));
+                    
                     handler.OnCmd = args =>
                     {
                         switch (args[0])
                         {
                             case "c":
-                                sess.Send(args[1]);
+                                cli.Connect("127.0.0.1", 1234);
                                 break;
                             case "q":
-                                sess.Disconnect();
+                                cli.Disconnect();
                                 quit = true;
                                 break;
-                            case "dconn":
-                                sess.Disconnect();
+                            case "dc":
+                                cli.Disconnect();
                                 break;
-                            case "conn":
-                                sess.Connect();
+                            case "p":
+                                cli.Pause = !cli.Pause;
+                                LoggerUtil.Info(typeof(Program), "pause:{0}", cli.Pause);
+                                break;
+                            default:
+                                var cmd = string.Join(" ", args);
+                                if (cmd.StartsWith("`"))
+                                {
+                                    cli.Send(Encoding.ASCII.GetBytes(cmd.Remove(0,1)));
+                                }
+
                                 break;
                         }
                     };
@@ -47,7 +56,8 @@ namespace FPSClient
                     while (!quit)
                     {
                         handler.Update();
-                        sess.Update();
+
+                        cli.Update();                            
                     }
                 }
             }
