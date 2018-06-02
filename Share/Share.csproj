@@ -82,6 +82,7 @@
     <Compile Include="MsgProto\MsgFPS.cs" />
     <Compile Include="Network\TCPNetwork.cs" />
     <Compile Include="Network\UDPNetworkMT.cs" />
+    <Compile Include="Network\UDPNetworkMTSvr.cs" />
     <Compile Include="Sync\Sync.cs" />
     <Compile Include="Sync\Usage.cs" />
     <Compile Include="Utils\ConsoleCmdHandler.cs" />

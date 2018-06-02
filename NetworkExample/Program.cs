@@ -9,6 +9,7 @@ namespace NetworkExample
     {
         public static void Main(string[] args)
         {
+            UDPNetworkMTSvr.Test();
         }
     }
 }

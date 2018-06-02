@@ -78,7 +78,7 @@ namespace Share.Network
         Host host = new Host();
         
         public volatile bool Pause = false;
-        public bool Dev = true;    // for dev mode, program can break for long
+        public bool Dev = false;    // for dev mode, program can break for long
 
         private WorkerState _workerState = WorkerState.Idle;
 
@@ -106,7 +106,7 @@ namespace Share.Network
         {
             foreach (var evt in getEvents(workerQueue))
             {
-                trace(string.Format("worker event:{0}", evt.type));
+                trace(string.Format("worker {0}", evt.type));
                 switch (workerState)
                 {
                     case WorkerState.Error:
@@ -276,7 +276,7 @@ namespace Share.Network
             {
                 foreach (var evt in getEvents(mainQueue))
                 {
-                    trace(string.Format("main event:{0}", evt.type));
+                    trace(string.Format("main {0}", evt.type));
                     switch (evt.type)
                     {
                         case NetEvent.Type.Disconnected:
