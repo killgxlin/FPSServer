@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Text;
-using Assets.Script.ClientCore.Network;
+using Share.Network;
 using Share.Sync;
 using Share.Utils;
 

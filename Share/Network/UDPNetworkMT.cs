@@ -4,7 +4,7 @@ using System.Text;
 using System.Threading;
 using ENet;
 
-namespace Assets.Script.ClientCore.Network
+namespace Share.Network
 {
     public class UDPNetworkMT : IDisposable
     {
@@ -266,6 +266,8 @@ namespace Assets.Script.ClientCore.Network
                 thr.Join();
                 thr = null;
             }
+
+            host.Dispose();
         }
 
         public void Update()
@@ -297,16 +299,15 @@ namespace Assets.Script.ClientCore.Network
             }
         }
 
-        public void Connect(string ip, int port)
+        public bool Connect(string ip, int port)
         {
             if (State != NetState.Idle)
             {
-                return;
+                return false;
             }
 
             Ip = ip;
             Port = port;
-
 
             State = NetState.Connecting;
             enqueuSafe(workerQueue, new NetEvent
@@ -315,13 +316,15 @@ namespace Assets.Script.ClientCore.Network
                 ip = Ip,
                 port = Port,
             });
+
+            return true;
         }
 
-        public void Send(byte[] bytes)
+        public bool Send(byte[] bytes)
         {
             if (State != NetState.Connected)
             {
-                return;
+                return false;
             }
 
             enqueuSafe(workerQueue, new NetEvent
@@ -330,13 +333,15 @@ namespace Assets.Script.ClientCore.Network
                 bytes = bytes,
                 channelId = 0,
             });
+
+            return true;
         }
 
-        public void Disconnect()
+        public bool Disconnect()
         {
             if (State != NetState.Connected)
             {
-                return;
+                return false;
             }
 
             State = NetState.Disconnecting;
@@ -344,6 +349,8 @@ namespace Assets.Script.ClientCore.Network
             {
                 type = NetEvent.Type.Disconnect,
             });
+
+            return true;
         }
 
         public static void Test()
