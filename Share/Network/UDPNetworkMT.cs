@@ -78,6 +78,7 @@ namespace Assets.Script.ClientCore.Network
         Host host = new Host();
         
         public volatile bool Pause = false;
+        public bool Dev = true;    // for dev mode, program can break for long
 
         private WorkerState _workerState = WorkerState.Idle;
 
@@ -188,17 +189,12 @@ namespace Assets.Script.ClientCore.Network
                                         type = NetEvent.Type.Connected,
                                     });
                                     workerState = WorkerState.Connected;
-                                    
-                                    try
+
+                                    if (Dev)
                                     {
                                         curPeer.SetTimeouts(0, 3000000, 3000000);
                                     }
-                                    catch (Exception e)
-                                    {
-                                        trace(e.ToString());
-                                    }
-
-
+                                        
                                     break;
                                 case EventType.Receive:
                                     enqueuSafe(mainQueue, new NetEvent
@@ -252,7 +248,7 @@ namespace Assets.Script.ClientCore.Network
         public string Ip { get; set; } = "";
         public int Port { get; set; } = 0;
 
-        public bool Trace = false;
+        public volatile bool Trace = false;
 
         public UDPNetworkMT()
         {

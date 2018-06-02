@@ -11,8 +11,7 @@ namespace NetworkExample
         {
             using (var svr = new UDPServer())
             {
-                svr.Listen(1234);
-                svr.OnConnect = l =>
+                svr.OnConnect = l => 
                 {
                     Console.WriteLine(DateTime.Now.ToLongTimeString() + " connected "+l);
                 };
@@ -22,11 +21,23 @@ namespace NetworkExample
                 };
                 svr.OnReceive = (l, bytes, arg3) =>
                 {
-                    Console.WriteLine(DateTime.Now.ToLongTimeString() + " receive "+Encoding.ASCII.GetString(bytes));
+                    var recved = Encoding.ASCII.GetString(bytes);
+                    Console.WriteLine(DateTime.Now.ToLongTimeString() + " receive "+recved);
+
+                    switch (recved)
+                    {
+                    case "dc":
+                        svr.Disconnect(l);
+                        break;
+                    default:
+                        svr.SendBytes(l, bytes, arg3);
+                        break;
+                    }
                     
-                    svr.SendBytes(l, bytes, arg3);
+                    
                 };
                 
+                svr.Listen(1234);
                 while (true)
                 {
                     svr.Update();
