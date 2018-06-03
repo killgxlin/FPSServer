@@ -67,7 +67,7 @@ namespace Share.Network
         }
 
         // worker -----------------------------------------------------------------------
-        enum ConnState
+        enum WorkerConnState
         {
             Idle,
             Connected,
@@ -75,29 +75,29 @@ namespace Share.Network
             Error,
         }
 
-        Dictionary<Int64, ConnState> connStates = new Dictionary<long, ConnState>();
+        Dictionary<Int64, WorkerConnState> workerConnState = new Dictionary<long, WorkerConnState>();
         Host host = new Host();
 
         public volatile bool Pause = false;
         public bool Dev = false; // for dev mode, program can break for long
 
-        ConnState getConnState(Int64 peerId)
+        WorkerConnState getWorkerConnState(Int64 peerId)
         {
-            var state = ConnState.Idle;
-            connStates.TryGetValue(peerId, out state);
+            var state = WorkerConnState.Idle;
+            workerConnState.TryGetValue(peerId, out state);
             return state;
         }
 
-        void setConnState(Int64 peerId, ConnState state)
+        void setWorkerConnState(Int64 peerId, WorkerConnState state)
         {
-            var prevState = getConnState(peerId);
-            if (state == ConnState.Idle)
+            var prevState = getWorkerConnState(peerId);
+            if (state == WorkerConnState.Idle)
             {
-                connStates.Remove(peerId);
+                workerConnState.Remove(peerId);
             }
             else
             {
-                connStates[peerId] = state;
+                workerConnState[peerId] = state;
             }
 
             trace(string.Format("{0}-worker {1} to {2}",peerId, prevState, state));
@@ -109,7 +109,7 @@ namespace Share.Network
             {
                 updateWorkerQueue();
 
-                updateState();
+                updateHost();
             }
         }
 
@@ -120,9 +120,9 @@ namespace Share.Network
             foreach (var evt in getEvents(workerQueue))
             {
                 trace(string.Format("{0}-worker {1}", evt.peerId, evt.type));
-                var state = getConnState(evt.peerId);
+                var state = getWorkerConnState(evt.peerId);
 
-                if (state != ConnState.Connected)
+                if (state != WorkerConnState.Connected)
                 {
                     continue;
                 }
@@ -140,12 +140,13 @@ namespace Share.Network
                 }
                 else if (evt.type == NetEvent.Type.Disconnect)
                 {
+                    setWorkerConnState(evt.peerId, WorkerConnState.Disconnecting);
                     peer.DisconnectLater(4444);
                 }
             }
         }
 
-        unsafe void updateState()
+        unsafe void updateHost()
         {
             if (Pause)
             {
@@ -154,7 +155,7 @@ namespace Share.Network
 
             Event ev;
             Int64 peerId;
-            ConnState state;
+            WorkerConnState state;
 
             if (host.Service(100, out ev))
             {
@@ -166,7 +167,7 @@ namespace Share.Network
                             peerId = (Int64) ev.Peer.NativeData;
                             var addr = ev.Peer.GetRemoteAddress();
 
-                            setConnState(peerId, ConnState.Connected);
+                            setWorkerConnState(peerId, WorkerConnState.Connected);
 
                             enqueuSafe(mainQueue, new NetEvent
                             {
@@ -198,7 +199,7 @@ namespace Share.Network
                             break;
                         case EventType.Disconnect:
                             peerId = (Int64) ev.Peer.NativeData;
-                            setConnState(peerId, ConnState.Idle);
+                            setWorkerConnState(peerId, WorkerConnState.Idle);
                             enqueuSafe(mainQueue, new NetEvent
                             {
                                 type = NetEvent.Type.Disconnected,
@@ -212,34 +213,32 @@ namespace Share.Network
         }
 
         // main -----------------------------------------------------------------------
-        public enum NetState
+        public enum ConnState
         {
             Idle,
             Connected,
             Disconnecting,
         }
 
-        private NetState state = NetState.Idle;
-        
-        Dictionary<Int64, NetState> netStates = new Dictionary<long, NetState>();
+        Dictionary<Int64, ConnState> connState = new Dictionary<long, ConnState>();
 
-        public NetState GetPeerState(Int64 peerId)
+        public ConnState GetPeerState(Int64 peerId)
         {
-            var state = NetState.Idle;
-            netStates.TryGetValue(peerId, out state);
+            var state = ConnState.Idle;
+            connState.TryGetValue(peerId, out state);
             return state;
         }
 
-        private void setPeerState(Int64 peerId, NetState state)
+        private void setPeerState(Int64 peerId, ConnState state)
         {
             var prevState = GetPeerState(peerId);
-            if (state == NetState.Idle)
+            if (state == ConnState.Idle)
             {
-                netStates.Remove(peerId);
+                connState.Remove(peerId);
             }
             else
             {
-                netStates[peerId] = state;
+                connState[peerId] = state;
             }
             
             trace(string.Format("{0}-main {1} to {2}",peerId, prevState, state));
@@ -281,14 +280,14 @@ namespace Share.Network
                     switch (evt.type)
                     {
                         case NetEvent.Type.Disconnected:
-                            setPeerState(evt.peerId, NetState.Idle);
+                            setPeerState(evt.peerId, ConnState.Idle);
                             OnDisconnect?.Invoke(evt.peerId);
                             break;
                         case NetEvent.Type.Recved:
                             OnReceive?.Invoke(evt.peerId, evt.bytes, evt.channelId);
                             break;
                         case NetEvent.Type.Connected:
-                            setPeerState(evt.peerId, NetState.Connected);
+                            setPeerState(evt.peerId, ConnState.Connected);
                             OnConnect?.Invoke(evt.peerId);
                             break;
                     }
@@ -302,7 +301,7 @@ namespace Share.Network
 
         public bool Send(Int64 peerId, byte[] bytes)
         {
-            if (GetPeerState(peerId) != NetState.Connected)
+            if (GetPeerState(peerId) != ConnState.Connected)
             {
                 return false;
             }
@@ -320,11 +319,13 @@ namespace Share.Network
 
         public bool Disconnect(Int64 peerId)
         {
-            if (GetPeerState(peerId) != NetState.Connected)
+            if (GetPeerState(peerId) != ConnState.Connected)
             {
                 return false;
             }
 
+            setPeerState(peerId, ConnState.Disconnecting);
+            
             enqueuSafe(workerQueue, new NetEvent
             {
                 type = NetEvent.Type.Disconnect,
@@ -359,7 +360,7 @@ namespace Share.Network
                 while (true)
                 {
                     svr.Update();
-                    Thread.Sleep(500);
+                    Thread.Sleep(100);
                 }
             }
         }

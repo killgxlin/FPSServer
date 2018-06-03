@@ -394,7 +394,7 @@ namespace Share.Network
                     }
 
                     cli.Update();
-                    Thread.Sleep(500);
+                    Thread.Sleep(100);
                 }
             }
         }

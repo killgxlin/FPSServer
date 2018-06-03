@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using Share.Network;
 using Share.Sync;
 using Share.Utils;
@@ -57,7 +58,8 @@ namespace FPSClient
                     {
                         handler.Update();
 
-                        cli.Update();                            
+                        cli.Update();
+                        Thread.Sleep(100);
                     }
                 }
             }
